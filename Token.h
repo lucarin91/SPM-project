@@ -11,7 +11,7 @@ class Token {
 
     Token &operator=(Token const &) = delete;
 
-    static int ID = 0;
+    static int ID;
 
 protected:
 
@@ -27,10 +27,11 @@ public:
 
     Token(Token &t) : ready(_ready), id(_id),
                       _ready(t._ready), _id(t._id) { }
+
 };
 
 template<class T>
-class Token_value : Token {
+class Token_value : public Token {
 
     Token_value(Token_value const &) = delete;
 
@@ -44,13 +45,16 @@ public:
 
     Token_value(T v) : Token(false), value(_value), _value(v) { }
 
-    Token_value(Token_value &t) : Token(), value(_value), _ready(t._ready), _id(t._id), _value(t._value) { }
+    Token_value(Token_value &t) : Token(),
+                                  value(_value),
+                                  _value(t._value) {
+        _ready = t._ready;
+        _id = t._id;
+    }
 
     const T &value;
 
     void set(T v) { _value = v; }
 };
-
-//Token::ID = 0;
 
 #endif //SPM_PROJECT_TOKEN_H

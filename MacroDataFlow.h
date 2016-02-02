@@ -9,21 +9,25 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include "Token.h"
 
 using namespace std;
-typedef std::function<Token(std::vector<shared_ptr<Token>>,shared_ptr<Token>)> fun;
-typedef std::vector<shared_ptr<Token>> t_vec;
+typedef std::function<void(std::vector<shared_ptr<Token>>,std::shared_ptr<Token>)> fun;
+typedef std::vector<std::shared_ptr<Token>> t_in;
+typedef std::shared_ptr<Token> t_out;
 
 struct Statement {
     fun f;
-    t_vec in;
-    shared_ptr<Token> out;
+    t_in in;
+    t_out out;
+    bool fired;
 
-    Statement(fun f, t_vec in, shared_ptr<Token> out) :
+    Statement(fun f, t_in in, t_out out) :
             f(f),
             in(in),
-            out(out) { };
+            out(out),
+            fired(false) { };
 };
 
 class MacroDataFlow {
@@ -35,16 +39,20 @@ class MacroDataFlow {
 
 private:
     unordered_map<int, shared_ptr<Token>> token;
-    unordered_map<int, Statement> stm;
+    unordered_map<int, vector<int>> token_to_stm;
+    unordered_set<int> ready_stm;
+    vector<Statement> stm;
 
-    void updateMap(Token&);
+    void updateTokenMap(shared_ptr<Token>);
+    void updateTokenToStm(int,int);
+    bool checkInputToken(t_in&);
 
 public:
     MacroDataFlow() { };
 
-    void add(fun, vector<shared_ptr<Token>>, shared_ptr<Token>);
+    void add(fun, initializer_list<Token>, Token);
 
-    t_vec start();
+    t_in start();
 };
 
 
