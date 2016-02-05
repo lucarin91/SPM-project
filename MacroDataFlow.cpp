@@ -26,7 +26,7 @@ void MacroDataFlow::add(fun f, initializer_list<shared_ptr<Token>> in_list, shar
 
 
     if (all_ready) {
-        ready_stm.emplace(&stm_id);
+        ready_stm.insert(stm_id);
     }
     updateTokenMap(out);
 }
