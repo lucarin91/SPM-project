@@ -13,9 +13,9 @@
 #include "Token.h"
 
 using namespace std;
-typedef std::function<void(std::vector<shared_ptr<Token>>,std::shared_ptr<Token>)> fun;
-typedef std::vector<std::shared_ptr<Token>> t_in;
-typedef std::shared_ptr<Token> t_out;
+typedef std::vector<shared_ptr<Token>> t_in;
+typedef shared_ptr<Token> t_out;
+typedef std::function<void(t_in,t_out)> fun;
 
 struct Statement {
     fun f;
@@ -50,7 +50,7 @@ private:
 public:
     MacroDataFlow() { };
 
-    void add(fun, initializer_list<Token>, Token);
+    void add(fun, initializer_list<shared_ptr<Token>>, shared_ptr<Token>);
 
     t_in start();
 };

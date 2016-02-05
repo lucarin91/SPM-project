@@ -7,9 +7,10 @@
 
 class Token {
 
-    Token(Token const &) = delete;
+    Token(Token &) = delete;
 
-    Token &operator=(Token const &) = delete;
+  Token &operator=(Token const &) = delete;
+
 
     static int ID;
 
@@ -22,10 +23,12 @@ public:
     const int &id;
     const bool &ready;
 
+    ~Token(){};
+
     Token(bool r = false) : ready(_ready), id(_id),
                             _ready(r), _id(Token::ID++) { }
 
-    Token(Token &t) : ready(_ready), id(_id),
+    Token(const Token &t) : ready(_ready), id(_id),
                       _ready(t._ready), _id(t._id) { }
 
 };
@@ -33,19 +36,20 @@ public:
 template<class T>
 class Token_value : public Token {
 
-    Token_value(Token_value const &) = delete;
+    Token_value(Token_value &) = delete;
 
     Token_value &operator=(Token_value const &) = delete;
 
     T _value;
 
 public:
+    ~Token_value(){};
 
     Token_value() : Token(), value(_value) { }
 
     Token_value(T v) : Token(false), value(_value), _value(v) { }
 
-    Token_value(Token_value &t) : Token(),
+    Token_value(const Token_value &t) : Token(),
                                   value(_value),
                                   _value(t._value) {
         _ready = t._ready;
