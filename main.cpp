@@ -7,9 +7,9 @@ int main() {
 
     MacroDataFlow mc;
 
-    Token_value<int> in1(5);
-    Token_value<int> in2(2);
-    Token_value<int> out;
+    shared_ptr<Token_value<int>> in1 (new Token_value<int> (5));
+    shared_ptr<Token_value<int>> in2 (new Token_value<int> (2));
+    shared_ptr<Token_value<int>> out (new Token_value<int> ());
 
     fun f = [](t_in in_ptr, t_out out_ptr) {
         auto &in1 = static_cast<Token_value<int>&> (*in_ptr[0]);
@@ -18,9 +18,14 @@ int main() {
         out.set(in1.value + in2.value);
     };
 
-    mc.add(f, {shared_ptr<Token>(&in1), shared_ptr<Token>(&in2)}, shared_ptr<Token>(&out));
+    mc.add(f, {in1, in2}, out);
 
     t_in res = mc.start();
+
+    for (auto &item : res){
+        auto &t = static_cast<Token_value<int>&> (*item);
+        cout << "token" << t.id << " value " << t.value << endl;
+    }
 
     return 0;
 }

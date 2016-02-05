@@ -8,9 +8,9 @@
 void MacroDataFlow::add(fun f, initializer_list<shared_ptr<Token>> in_list, shared_ptr<Token> out) {
     int stm_id = stm.size();
 
-    t_in in_vec = t_in(in_list.size());
+    t_in in_vec;
     bool all_ready = true;
-    for (auto &item : in_list){
+    for (auto item : in_list){
         if (!item->ready) all_ready = false;
 
 //      auto ptr = shared_ptr<Token>(&item);
@@ -34,29 +34,34 @@ void MacroDataFlow::add(fun f, initializer_list<shared_ptr<Token>> in_list, shar
 t_in MacroDataFlow::start(){
     while (ready_stm.size()!=0){
         int stm_id = *ready_stm.begin();
+        ready_stm.erase(ready_stm.begin());
 
         t_in in = stm[stm_id].in;
         t_out out = stm[stm_id].out;
         stm[stm_id].f(in, out);
-
         stm[stm_id].fired = true;
 
         auto v = token_to_stm[out->id];
 
         for (auto& id : v){
             if (checkInputToken(stm[id].in)){
-                ready_stm.emplace(id);
+                ready_stm.insert(id);
             }
         }
+
     }
+    t_in res;
+    for (auto &item : token){
+        res.push_back(item.second);
+    }
+    return res;
 }
 
 // PRIVATE
 void MacroDataFlow::updateTokenMap(shared_ptr<Token> p) {
     auto got = token.find(p->id);
-    if (got != token.end() && !got->second->ready && p->ready) {
+    if (got == token.end() || (got != token.end() && !got->second->ready && p->ready))
         token[p->id] = p;
-    }
 }
 
 void MacroDataFlow::updateTokenToStm(int token_id, int stm_id){
