@@ -41,18 +41,20 @@ t_in MacroDataFlow::start(){
         stm[stm_id].f(in, out);
         stm[stm_id].fired = true;
 
-        auto v = token_to_stm[out->id];
-
-        for (auto& id : v){
-            if (checkInputToken(stm[id].in)){
-                ready_stm.insert(id);
+        auto got = token_to_stm.find(out->id);
+        if (got != token_to_stm.end())
+            for (auto& id : got->second){
+                if (checkInputToken(stm[id].in) && !stm[id].fired){
+                    ready_stm.insert(id);
+                }
             }
-        }
 
     }
     t_in res;
     for (auto &item : token){
-        res.push_back(item.second);
+        auto got = token_to_stm.find(item.first);
+        if (got==token_to_stm.end())
+            res.push_back(item.second);
     }
     return res;
 }
@@ -67,7 +69,7 @@ void MacroDataFlow::updateTokenMap(shared_ptr<Token> p) {
 void MacroDataFlow::updateTokenToStm(int token_id, int stm_id){
     auto got = token_to_stm.find(token_id);
     if (got == token_to_stm.end()){
-        auto v = vector<int>(1);
+        auto v = vector<int>();
         v.push_back(stm_id);
         token_to_stm[token_id] = move(v);
     }else{

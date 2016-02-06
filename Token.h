@@ -58,7 +58,7 @@ public:
 
     const T &value;
 
-    void set(T v) { _value = v; }
+    void set(T v) { _value = v; _ready=true; }
 };
 
 #endif //SPM_PROJECT_TOKEN_H
