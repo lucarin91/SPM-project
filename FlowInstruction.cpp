@@ -2,10 +2,10 @@
 // Created by luca on 22/12/15.
 //
 
-#include "MacroDataFlow.h"
+#include "FlowInstruction.h"
 
 // PUBLIC
-void MacroDataFlow::add(fun f, initializer_list<shared_ptr<Token>> in_list, shared_ptr<Token> out) {
+void FlowInstruction::add(fun f, initializer_list<shared_ptr<Token>> in_list, shared_ptr<Token> out) {
     int stm_id = stm.size();
 
     t_in in_vec;
@@ -31,7 +31,7 @@ void MacroDataFlow::add(fun f, initializer_list<shared_ptr<Token>> in_list, shar
     updateTokenMap(out);
 }
 
-t_in MacroDataFlow::start(){
+t_in FlowInstruction::start(){
     while (ready_stm.size()!=0){
         int stm_id = *ready_stm.begin();
         ready_stm.erase(ready_stm.begin());
@@ -60,13 +60,15 @@ t_in MacroDataFlow::start(){
 }
 
 // PRIVATE
-void MacroDataFlow::updateTokenMap(shared_ptr<Token> p) {
+int FlowInstruction::_ID = 1;
+
+void FlowInstruction::updateTokenMap(shared_ptr<Token> p) {
     auto got = token.find(p->id);
     if (got == token.end() || (got != token.end() && !got->second->ready && p->ready))
         token[p->id] = p;
 }
 
-void MacroDataFlow::updateTokenToStm(int token_id, int stm_id){
+void FlowInstruction::updateTokenToStm(int token_id, int stm_id){
     auto got = token_to_stm.find(token_id);
     if (got == token_to_stm.end()){
         auto v = vector<int>();
@@ -78,7 +80,7 @@ void MacroDataFlow::updateTokenToStm(int token_id, int stm_id){
 }
 
 
-bool MacroDataFlow::checkInputToken(t_in& v){
+bool FlowInstruction::checkInputToken(t_in& v){
     bool all_ready = true;
     for (auto& p : v){
         if (!p->ready){

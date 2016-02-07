@@ -4,4 +4,5 @@
 
 #include "Token.h"
 
-int Token::ID = 1;
+//int Token::_ID = 1;
+
