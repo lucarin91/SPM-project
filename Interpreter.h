@@ -22,11 +22,13 @@ class Interpreter {
 
     GraphRepository &_gr;
 
-    unordered_map<int, vector<shared_ptr<Token>>> token;
+    unordered_map<int, vector<shared_ptr<Token>>> _token;
     //unordered_map<int, vector<int>> token_to_stm;
     //unordered_set<int> ready_stm;
 
-    void _start(const Graph &g);
+    void _start(const Graph& g, Drainer function1);
+    shared_ptr<Token> _get_token_type(int);
+
 public:
     Interpreter(GraphRepository &g) : _gr(g) {}
 
