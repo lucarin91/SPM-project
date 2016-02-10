@@ -32,8 +32,8 @@ int main() {
     };
     
     for (int i = 0; i < 1; i++) {
-        inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, 2)),
-                  shared_ptr<Token>(new Token_value<int>(2, i))}, drain);
+        inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, i)),
+                                 shared_ptr<Token>(new Token_value<int>(2, i))}, drain);
     }
     return 0;
 }
