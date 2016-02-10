@@ -22,6 +22,7 @@ void Graph::add(fun f, initializer_list<int> in_list, int out) {
 
 // PRIVATE
 int Graph::_ID = 1;
+int Statement::_ID = 1;
 
 void Graph::_update_t_in_out(const t_type_in &in, const t_type_out &out) {
 //    auto got = _t_in.find(out);
@@ -35,10 +36,10 @@ void Graph::_update_t_in_out(const t_type_in &in, const t_type_out &out) {
 //            _t_out.erase(item);
 //        _t_in.insert(item);
 //    }
-
+    _t_out.insert(out);
     for (const auto& item : in){
         _t_in.insert(item);
         _t_out.erase(item);
     }
-    _t_out.insert(out);
+
 }
