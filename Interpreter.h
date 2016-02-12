@@ -7,6 +7,8 @@
 
 #include <thread>
 #include <iostream>
+#include <mutex>
+#include <atomic>
 #include "GraphRepository.h"
 
 using namespace std;
@@ -51,7 +53,9 @@ public:
                                         _fired_stm(move(in._fired_stm)),
                                         _n_thread(move(in._n_thread)) { }
 
-        void start(initializer_list<shared_ptr<Token>>, Drainer);
+        //void start(initializer_list<shared_ptr<Token>>, Drainer);
+
+        void start(vector<shared_ptr<Token>>, Drainer);
 
     private:
         const Graph &_g;
@@ -70,7 +74,6 @@ public:
         //shared_ptr<Token> _get_token_type(int);
 
         void _body_thread(fun, t_in, Drainer);
-
     };
 
 

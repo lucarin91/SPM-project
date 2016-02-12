@@ -3,8 +3,17 @@
 //
 
 #include "Interpreter.h"
+//
+//void InterpreterFactory::Interpreter::start(initializer_list<shared_ptr<Token>> list, Drainer drainer){
+//    vector<shared_ptr<Token>> v;
+//    for (auto& item : list){
+//        v.push_back(item);
+//    }
+//
+//    start(move(v), drainer);
+//}
 
-void InterpreterFactory::Interpreter::start(initializer_list<shared_ptr<Token>> list, Drainer drainer) {
+void InterpreterFactory::Interpreter::start(vector<shared_ptr<Token>> list, Drainer drainer) {
     _fired_stm.clear();
     _token.clear();
 
@@ -15,7 +24,7 @@ void InterpreterFactory::Interpreter::start(initializer_list<shared_ptr<Token>> 
     vector<thread> pt;
     bool con = false;
     //_check_token_mutex([this,&con](){con = _token.size() != 0;});
-    while (_fired_stm.size() != _g.ist.size() || _n_thread>0){ //SYNC
+    while (_fired_stm.size() != _g.ist.size() || *_n_thread>0){ //SYNC
 
         for (const Statement& stm : _g.ist) {
             if (_fired_stm.find(stm.id) == _fired_stm.end()) {
@@ -67,9 +76,9 @@ void InterpreterFactory::Interpreter::start(initializer_list<shared_ptr<Token>> 
 
 
     for (auto &t : pt){
-        cout << "join: " << t.get_id() << endl << flush;
+        auto id = t.get_id();
         t.join();
-        cout << "join: " << t.get_id() << endl << flush;
+        cout << "Worker thread joined: " << id << endl << flush;
     }
 }
 
@@ -124,22 +133,29 @@ void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>> 
     auto got = _gr.graph.find(name);
     if (got != _gr.graph.end()){
         const Graph& g = got->second;
-        _int_thread.push_back(thread([](const Graph &g, initializer_list<shared_ptr<Token>> list, Drainer drainer){
+        /*_int_thread.push_back(thread([](const Graph &g, initializer_list<shared_ptr<Token>> list, Drainer drainer){
             Interpreter in(g);
-            in.start(list,drainer);
-        }, g, list, drainer));
+            initializer_list<shared_ptr<Token>> l = list;
+            in.start(l, drainer);
+        }, g, move(list), drainer));*/
+        Interpreter in(g);
+        vector<shared_ptr<Token>> v;
+        for (auto& i : list){
+            v.push_back(i);
+        }
+        _int_thread.push_back(thread(&InterpreterFactory::Interpreter::start, move(in), move(v), move(drainer)));
     }else{
 
     }
 }
 
 InterpreterFactory::~InterpreterFactory(){
-    cout << "decostructor " << endl << flush;
+    //cout << "decostructor " << endl << flush;
 
     for (auto& item : _int_thread){
-        cout << "joined: " << item.get_id() << endl << flush;
+        auto id = item.get_id();
         item.join();
-        cout << "joined: " << item.get_id() << endl << flush;
+        cout << "Interpreter thread joined: " << id << endl << flush;
     }
 }
 

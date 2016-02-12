@@ -28,10 +28,10 @@ int main() {
     InterpreterFactory inFactory(gr);
 
     function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
-        cout << static_cast<Token_value<int> &> (*t).value << endl << flush;
+        cout << "drainer: " << static_cast<Token_value<int> &> (*t).value << endl << flush;
     };
     
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 4; i++) {
         inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, i)),
                                  shared_ptr<Token>(new Token_value<int>(2, i))}, drain);
     }
