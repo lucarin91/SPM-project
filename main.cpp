@@ -3,11 +3,13 @@
 #include "GraphRepository.h"
 #include "Interpreter.h"
 #include "SyncCout.h"
+#include "ThreadPool.h"
 
 using namespace std;
 
 int main() {
     SyncCout::setSync(true);
+    ThreadPool::getIstance().start();
 
     GraphRepository gr;
     gr.add("test", {

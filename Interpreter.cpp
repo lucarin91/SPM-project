@@ -5,6 +5,7 @@
 #include <sstream>
 #include "Interpreter.h"
 #include "SyncCout.h"
+#include "ThreadPool.h"
 //
 //void InterpreterFactory::Interpreter::start(initializer_list<shared_ptr<Token>> list, Drainer drainer){
 //    vector<shared_ptr<Token>> v;
@@ -59,8 +60,12 @@ void InterpreterFactory::Interpreter::start(t_in list, Drainer drainer) {
                     }
 
                     ++*_n_thread;
-                    pt.push_back(thread(&Interpreter::_body_thread, this, stm.f, in, drainer));
+                    //pt.push_back(thread(&Interpreter::_body_thread, this, stm.f, in, drainer));
 
+                    auto &tp = ThreadPool::getIstance();
+                    tp.addExecTask([this, &stm, &in, &drainer](){
+                        this->_body_thread(stm.f,in,drainer);
+                    });
                     //thread t (&Interpreter::_test, this, g, stm.f);
 //                auto t = stm.f(in);
 //
@@ -144,14 +149,21 @@ void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>> 
             initializer_list<shared_ptr<Token>> l = list;
             in.start(l, drainer);
         }, g, move(list), drainer));*/
-        Interpreter in(g);
-        vector<shared_ptr<Token>> v;
-        for (auto &i : list) {
-            v.push_back(i);
-        }
-        _int_thread.push_back(thread(&InterpreterFactory::Interpreter::start, move(in), move(v), move(drainer)));
-    } else {
 
+
+        //_int_thread.push_back(thread(&InterpreterFactory::Interpreter::start, move(in), move(v), move(drainer)));
+
+        auto &tp = ThreadPool::getIstance();
+        tp.addValueTask([&list,&drainer](){
+            Interpreter in(g);
+            vector<shared_ptr<Token>> v;
+            for (auto &i : list) {
+                v.push_back(i);
+            }
+            in.start(v,drainer);
+        });
+    } else {
+        //graph not finded
     }
 }
 

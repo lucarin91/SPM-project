@@ -20,6 +20,7 @@ void ThreadPool::_thread_body() {
         _exec_task_mutex.lock();
         if (_exec_task.size()>0){
             auto t = _exec_task.front();
+            _exec_task.erase(_exec_task.begin());
             _exec_task_mutex.unlock();
             t();
         }else {
@@ -27,7 +28,8 @@ void ThreadPool::_thread_body() {
 
             _eval_task_mutex.lock();
             if (_eval_task.size() > 0) {
-                auto t = _exec_task.front();
+                auto t = _eval_task.front();
+                _eval_task.erase(_eval_task.begin());
                 _eval_task_mutex.unlock();
                 t();
             } else

@@ -15,7 +15,7 @@ class ThreadPool {
     ThreadPool() : _run(true){ }
 
     ~ThreadPool(){
-        _run=false;
+        //_run=false;
         for(auto& t : _thread){
             t.join();
         }
