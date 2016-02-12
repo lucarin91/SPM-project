@@ -2,7 +2,9 @@
 // Created by luca on 07/02/2016.
 //
 
+#include <sstream>
 #include "Interpreter.h"
+#include "SyncCout.h"
 //
 //void InterpreterFactory::Interpreter::start(initializer_list<shared_ptr<Token>> list, Drainer drainer){
 //    vector<shared_ptr<Token>> v;
@@ -13,20 +15,20 @@
 //    start(move(v), drainer);
 //}
 
-void InterpreterFactory::Interpreter::start(vector<shared_ptr<Token>> list, Drainer drainer) {
+void InterpreterFactory::Interpreter::start(t_in list, Drainer drainer) {
     _fired_stm.clear();
     _token.clear();
 
-    for (auto& item : list){
+    for (auto &item : list) {
         _token[item->id] = item;
     }
 
     vector<thread> pt;
     bool con = false;
     //_check_token_mutex([this,&con](){con = _token.size() != 0;});
-    while (_fired_stm.size() != _g.ist.size() || *_n_thread>0){ //SYNC
+    while (_fired_stm.size() != _g.ist.size() /*|| *_n_thread>0*/) { //SYNC
 
-        for (const Statement& stm : _g.ist) {
+        for (const Statement &stm : _g.ist) {
             if (_fired_stm.find(stm.id) == _fired_stm.end()) {
                 bool ready = true;
                 t_in in;
@@ -75,10 +77,12 @@ void InterpreterFactory::Interpreter::start(vector<shared_ptr<Token>> list, Drai
     }
 
 
-    for (auto &t : pt){
+    for (auto &t : pt) {
         auto id = t.get_id();
         t.join();
-        cout << "Worker thread joined: " << id << endl << flush;
+        stringstream s;
+        s << "Worker thread joined: " << id;
+        SyncCout::println(s);
     }
 }
 
@@ -108,14 +112,16 @@ void Interpreter::execute(shared_ptr<Token> ptr) {
 
 
 void InterpreterFactory::Interpreter::_body_thread(fun f, t_in in, Drainer drainer) {
-
+    //this_thread::sleep_for(chrono::milliseconds(1000));
     auto t = f(in);
+    stringstream msg;
+    msg << "function executed by: " << this_thread::get_id() << " ";
+    SyncCout::println(msg);
     int id = t->id;
     if (_g.t_in.find(id) == _g.t_in.end()) {
-        cout << "id: " << this_thread::get_id() << " ";
         drainer(t);
     } else {
-        _check_token_mutex([this,&id,&t](){
+        _check_token_mutex([this, &id, &t]() {
             _token[id] = move(t); //SYNC
         });
     }
@@ -123,7 +129,7 @@ void InterpreterFactory::Interpreter::_body_thread(fun f, t_in in, Drainer drain
 }
 
 
-void InterpreterFactory::Interpreter::_check_token_mutex(function<void()> f){
+void InterpreterFactory::Interpreter::_check_token_mutex(function<void()> f) {
     _token_mutex->lock();
     f();
     _token_mutex->unlock();
@@ -131,8 +137,8 @@ void InterpreterFactory::Interpreter::_check_token_mutex(function<void()> f){
 
 void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>> list, Drainer drainer) {
     auto got = _gr.graph.find(name);
-    if (got != _gr.graph.end()){
-        const Graph& g = got->second;
+    if (got != _gr.graph.end()) {
+        const Graph &g = got->second;
         /*_int_thread.push_back(thread([](const Graph &g, initializer_list<shared_ptr<Token>> list, Drainer drainer){
             Interpreter in(g);
             initializer_list<shared_ptr<Token>> l = list;
@@ -140,19 +146,19 @@ void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>> 
         }, g, move(list), drainer));*/
         Interpreter in(g);
         vector<shared_ptr<Token>> v;
-        for (auto& i : list){
+        for (auto &i : list) {
             v.push_back(i);
         }
         _int_thread.push_back(thread(&InterpreterFactory::Interpreter::start, move(in), move(v), move(drainer)));
-    }else{
+    } else {
 
     }
 }
 
-InterpreterFactory::~InterpreterFactory(){
+InterpreterFactory::~InterpreterFactory() {
     //cout << "decostructor " << endl << flush;
 
-    for (auto& item : _int_thread){
+    for (auto &item : _int_thread) {
         auto id = item.get_id();
         item.join();
         cout << "Interpreter thread joined: " << id << endl << flush;

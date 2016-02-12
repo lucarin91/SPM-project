@@ -1,10 +1,13 @@
 #include <iostream>
+#include <sstream>
 #include "GraphRepository.h"
 #include "Interpreter.h"
+#include "SyncCout.h"
 
 using namespace std;
 
 int main() {
+    SyncCout::setSync(true);
 
     GraphRepository gr;
     gr.add("test", {
@@ -28,10 +31,13 @@ int main() {
     InterpreterFactory inFactory(gr);
 
     function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
-        cout << "drainer: " << static_cast<Token_value<int> &> (*t).value << endl << flush;
+        auto &tv = static_cast<Token_value<int> &> (*t);
+        stringstream msg;
+        msg << "drainer: " << "token: " << tv.id << " value: " << tv.value;
+        SyncCout::println(msg);
     };
     
-    for (int i = 0; i < 4; i++) {
+    for (int i = 1; i < 4; i++) {
         inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, i)),
                                  shared_ptr<Token>(new Token_value<int>(2, i))}, drain);
     }

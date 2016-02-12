@@ -21,7 +21,8 @@ class InterpreterFactory {
     InterpreterFactory(InterpreterFactory const &) = delete;
 
     InterpreterFactory(InterpreterFactory &) = delete;
-    InterpreterFactory(InterpreterFactory&&) = delete;
+
+    InterpreterFactory(InterpreterFactory &&) = delete;
 
     InterpreterFactory &operator=(InterpreterFactory const &) = delete;
 
@@ -35,6 +36,7 @@ public:
     void start(string name, initializer_list<shared_ptr<Token>>, Drainer);
 
     ~InterpreterFactory();
+
     class Interpreter {
         Interpreter(Interpreter const &) = delete;
 
@@ -47,15 +49,14 @@ public:
                                        _n_thread(new atomic<int>(0)),
                                        _token_mutex(new mutex()) { }
 
-        Interpreter(Interpreter&& in) : _g(move(in._g)),
+        Interpreter(Interpreter &&in) : _g(move(in._g)),
                                         _token(move(in._token)),
                                         _token_mutex(move(in._token_mutex)),
                                         _fired_stm(move(in._fired_stm)),
                                         _n_thread(move(in._n_thread)) { }
 
         //void start(initializer_list<shared_ptr<Token>>, Drainer);
-
-        void start(vector<shared_ptr<Token>>, Drainer);
+        void start(t_in, Drainer);
 
     private:
         const Graph &_g;
