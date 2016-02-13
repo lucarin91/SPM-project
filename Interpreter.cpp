@@ -30,11 +30,11 @@ void Interpreter::start(t_in list, Drainer drainer) {
     SyncCout::println(msg);
     while (_fired_stm.size() != _g->ist.size() /*|| *_n_thread>0*/) { //SYNC
 
-        for (const Statement &stm : _g->ist) {
-            if (_fired_stm.find(stm.id) == _fired_stm.end()) {
+        for (const auto &stm : _g->ist) {
+            if (_fired_stm.find(stm->id) == _fired_stm.end()) {
                 bool ready = true;
                 t_in in;
-                const t_type_in &in_list = stm.in;
+                const t_type_in &in_list = stm->in;
                 for (const int &id : in_list) {
 
                     _check_token_mutex([this, &ready, &in, &id]() {
@@ -51,7 +51,7 @@ void Interpreter::start(t_in list, Drainer drainer) {
                 }
 
                 if (ready) {
-                    _fired_stm.insert(stm.id);
+                    _fired_stm.insert(stm->id);
                     for (const int &id : in_list) {
                         _check_token_mutex([this, &in, &id, &stm]() {
                             in.push_back(_token[id]);
@@ -63,10 +63,12 @@ void Interpreter::start(t_in list, Drainer drainer) {
                     //pt.push_back(thread(&Interpreter::_body_thread, this, stm.f, in, drainer));
 
                     auto &tp = ThreadPool::getIstance();
-                    const fun &f = stm.f;
-                    tp.addExecTask([this, f, in, drainer]() {
-                        _body_thread(f, in, drainer);
-                    });
+                    const fun &f = stm->f;
+                    shared_ptr<Interpreter> i = shared_from_this();
+                    tp.addExecTask(move(exec_task(i,f,in,drainer)));
+                    /*tp.addExecTask([this, f, in, drainer]() {
+                        this->_body_thread(f, in, drainer);
+                    });*/
 //
                     //thread t (&Interpreter::_test, this, g, stm.f);
 //                auto t = stm.f(in);

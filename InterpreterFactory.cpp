@@ -22,11 +22,12 @@ void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>> 
             v.push_back(i);
         }
         auto &tp = ThreadPool::getIstance();
-
-        tp.addValueTask([&g,v,drainer](){
+        shared_ptr<Interpreter> in(new Interpreter(g));
+        tp.addValueTask(move(eval_task(in,v,drainer)));
+        /*tp.addValueTask([g,v,drainer](){
             Interpreter in(g);
             in.start(move(v),move(drainer));
-        });
+        });*/
     } else {
         //graph not finded
     }

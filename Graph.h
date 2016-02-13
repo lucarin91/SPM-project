@@ -26,15 +26,15 @@ struct Statement {
     fun f;
     t_type_in in;
     t_type_out out;
-    int miss;
+    //int miss;
     const int &id;
 
     Statement(fun f, t_type_in in, t_type_out out) :
             id(_id), _id(_ID++),
             f(f),
             in(in),
-            out(out),
-            miss(in.size()) { };
+            out(out)
+            /*miss(in.size())*/ { };
 private:
     static int _ID;
     int _id;
@@ -45,39 +45,39 @@ class Graph {
 
     Graph &operator=(Graph const &) = delete;
 
-    vector<Statement> _ist;
+    vector<shared_ptr<Statement>> _ist;
     t_type_in _t_in;
-    t_type_in _t_out;
+    //t_type_in _t_out;
 
     static int _ID;
     int _id;
 
-    void _update_t_in_out(const t_type_in&, const t_type_out&);
+    void _update_t_in_out(const Statement&);
 
 public:
-    Graph(Graph const &g): id(_id), ist(_ist), t_in(_t_in), t_out(_t_out),
-                           _id(g._id), _ist(g._ist), _t_in(g._t_in), _t_out(g._t_out) { }
+    Graph(Graph const &g): id(_id), ist(_ist), t_in(_t_in), /*t_out(_t_out),*/
+                           _id(g._id), _ist(g._ist), _t_in(g._t_in)/*, _t_out(g._t_out)*/ { }
 
-    Graph(Graph &&g) : id(_id), ist(_ist), t_in(_t_in), t_out(_t_out),
+    Graph(Graph &&g) : id(_id), ist(_ist), t_in(_t_in), /*t_out(_t_out),*/
                        _ist(move(g._ist)),
                        _id(move(g._id)),
-                       _t_in(move(g._t_in)),
-                       _t_out(move(g._t_out)) { }
+                       _t_in(move(g._t_in))/*,
+                       _t_out(move(g._t_out))*/ { }
 
-    Graph() : id(_id), ist(_ist), _id(_ID++), t_in(_t_in), t_out(_t_out) { }
+    Graph() : id(_id), ist(_ist), _id(_ID++), t_in(_t_in)/*, t_out(_t_out)*/ { }
 
-    Graph(initializer_list<Statement>);
+    Graph(initializer_list<shared_ptr<Statement>>);
 
     ~Graph(){
 
     }
 
     const int &id;
-    const vector<Statement> &ist;
+    const vector<shared_ptr<Statement>> &ist;
     const t_type_in &t_in;
-    const t_type_in &t_out;
+    //const t_type_in &t_out;
 
-    void add(fun, initializer_list<int>, int);
+    //void add(fun, initializer_list<int>, int);
 };
 
 

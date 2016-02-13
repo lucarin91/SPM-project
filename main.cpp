@@ -17,16 +17,16 @@ int main() {
                 return shared_ptr<Token_value<int>>(new Token_value<int>(4, in.value * 2));
             }, {3}, 4),*/
 
-            Statement([](t_in in_ptr) -> t_out {
+            shared_ptr<Statement>(new Statement([](t_in in_ptr) -> t_out {
                 auto &in = static_cast<Token_value<int> &> (*in_ptr[0]);
                 return shared_ptr<Token_value<int>>(new Token_value<int>(5, in.value * 3));
-            }, {3}, 5),
+            }, {3}, 5)),
 
-            Statement([](t_in in_ptr) -> t_out {
+            shared_ptr<Statement>(new Statement([](t_in in_ptr) -> t_out {
                 auto &in1 = static_cast<Token_value<int> &> (*in_ptr[0]);
                 auto &in2 = static_cast<Token_value<int> &> (*in_ptr[1]);
                 return shared_ptr<Token_value<int>>(new Token_value<int>(3, in1.value + in2.value));
-            }, {1, 2}, 3)
+            }, {1, 2}, 3))
     });
 
     InterpreterFactory inFactory(gr);

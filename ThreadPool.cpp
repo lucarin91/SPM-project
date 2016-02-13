@@ -24,10 +24,10 @@ void ThreadPool::_thread_eval() {
 
         _eval_task_mutex.lock();
         if (_eval_task.size() > 0) {
-            auto t = _eval_task.front();
+            auto &t = _eval_task.front();
             _eval_task.erase(_eval_task.begin());
             _eval_task_mutex.unlock();
-            t();
+            t.inter->start(t.input,t.drainer);
             --_n_task;
         } else {
             _eval_task_mutex.unlock();
@@ -39,10 +39,10 @@ void ThreadPool::_thread_exec() {
     while(!_to_stop || _n_task>0){
         _exec_task_mutex.lock();
         if (_exec_task.size()>0){
-            auto t = _exec_task.front();
+            auto &t = _exec_task.front();
             _exec_task.erase(_exec_task.begin());
             _exec_task_mutex.unlock();
-            t();
+            t.inter->_body_thread(t.f,t.input,t.drainer);
             --_n_task;
         }else {
             _exec_task_mutex.unlock();
@@ -50,17 +50,17 @@ void ThreadPool::_thread_exec() {
     }
 }
 
-void ThreadPool::addExecTask(function<void()> &&f) {
+void ThreadPool::addExecTask(exec_task &&t) {
     ++_n_task;
     _exec_task_mutex.lock();
-    _exec_task.push_back(f);
+    _exec_task.push_back(t);
     _exec_task_mutex.unlock();
 }
 
-void ThreadPool::addValueTask(function<void()> &&f) {
+void ThreadPool::addValueTask(eval_task &&t) {
     ++_n_task;
     _eval_task_mutex.lock();
-    _eval_task.push_back(f);
+    _eval_task.push_back(t);
     _eval_task_mutex.unlock();
 }
 

@@ -15,7 +15,7 @@
 using namespace std;
 typedef function<void(shared_ptr<Token>)> Drainer;
 
-class Interpreter {
+class Interpreter : public enable_shared_from_this<Interpreter> {
     Interpreter(Interpreter const &) = delete;
 
     Interpreter(Interpreter &) = delete;
@@ -30,15 +30,16 @@ public:
                                    _token_mutex(new mutex()),
                                    _t_in_mutex(new mutex()) { }
 
-    Interpreter(Interpreter &&in) : _g(move(in._g)),
+   /* Interpreter(Interpreter &&in) : _g(move(in._g)),
                                     //_t_in(move(in._t_in)),
                                     _token(move(in._token)),
                                     _token_mutex(move(in._token_mutex)),
                                     _t_in_mutex(move(in._t_in_mutex)),
-                                    _fired_stm(move(in._fired_stm)) { }
+                                    _fired_stm(move(in._fired_stm)) { }*/
 
     //void start(initializer_list<shared_ptr<Token>>, Drainer);
     void start(t_in, Drainer);
+    void _body_thread(fun, t_in, Drainer);
 
 private:
     shared_ptr<Graph> _g;
@@ -56,7 +57,7 @@ private:
     //void _start(Drainer function1);
     //shared_ptr<Token> _get_token_type(int);
 
-    void _body_thread(fun, t_in, Drainer);
+
 };
 
 
