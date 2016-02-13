@@ -17,18 +17,20 @@ class GraphRepository {
 
     GraphRepository &operator=(GraphRepository const &) = delete;
 
-    unordered_map<string, Graph> _graph;
+    unordered_map<string, shared_ptr<Graph>> _graph;
 
 
 public:
     GraphRepository() : graph(_graph) { }
 
-    void add(string, Graph);
+    void add(string, shared_ptr<Graph>);
 
     void add(string, initializer_list<Statement>);
 
-    const unordered_map<string, Graph> &graph;
+    const unordered_map<string, shared_ptr<Graph>> &graph;
+    ~GraphRepository(){
 
+    }
 };
 
 

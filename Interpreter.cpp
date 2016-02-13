@@ -2,12 +2,10 @@
 // Created by luca on 07/02/2016.
 //
 
-#include <sstream>
 #include "Interpreter.h"
-#include "SyncCout.h"
-#include "ThreadPool.h"
+
 //
-//void InterpreterFactory::Interpreter::start(initializer_list<shared_ptr<Token>> list, Drainer drainer){
+//void Interpreter::start(initializer_list<shared_ptr<Token>> list, Drainer drainer){
 //    vector<shared_ptr<Token>> v;
 //    for (auto& item : list){
 //        v.push_back(item);
@@ -16,7 +14,7 @@
 //    start(move(v), drainer);
 //}
 
-void InterpreterFactory::Interpreter::start(t_in list, Drainer drainer) {
+void Interpreter::start(t_in list, Drainer drainer) {
     //_fired_stm.clear();
     //_token.clear();
 
@@ -30,9 +28,9 @@ void InterpreterFactory::Interpreter::start(t_in list, Drainer drainer) {
     stringstream msg;
     msg << "graph evalueted by: " << this_thread::get_id() << " ";
     SyncCout::println(msg);
-    while (_fired_stm.size() != _g.ist.size() /*|| *_n_thread>0*/) { //SYNC
+    while (_fired_stm.size() != _g->ist.size() /*|| *_n_thread>0*/) { //SYNC
 
-        for (const Statement &stm : _g.ist) {
+        for (const Statement &stm : _g->ist) {
             if (_fired_stm.find(stm.id) == _fired_stm.end()) {
                 bool ready = true;
                 t_in in;
@@ -66,7 +64,7 @@ void InterpreterFactory::Interpreter::start(t_in list, Drainer drainer) {
 
                     auto &tp = ThreadPool::getIstance();
                     const fun &f = stm.f;
-                    tp.addExecTask([this, f, in, drainer](){
+                    tp.addExecTask([this, f, in, drainer]() {
                         _body_thread(f, in, drainer);
                     });
 //
@@ -119,20 +117,18 @@ void Interpreter::execute(shared_ptr<Token> ptr) {
     return t;
 }*/
 
-
-void InterpreterFactory::Interpreter::_body_thread(fun f, t_in in, Drainer drainer) {
-   //this_thread::sleep_for(chrono::milliseconds(1000));
+void Interpreter::_body_thread(fun f, t_in in, Drainer drainer) {
+    //this_thread::sleep_for(chrono::milliseconds(1000));
     auto t = f(in);
     stringstream msg;
     msg << "function executed by: " << this_thread::get_id() << " ";
     SyncCout::println(msg);
     int id = t->id;
     //_t_in_mutex->lock();
-    const auto &end = _t_in.end();
-    const auto &got = _t_in.find(id);
+    const auto &end = _g->t_in.end();
+    const auto &got = _g->t_in.find(id);
     //_t_in_mutex->unlock();
-    if ( got == end ) {
-
+    if (got == end) {
         drainer(t);
     } else {
         _check_token_mutex([this, &id, &t]() {
@@ -142,49 +138,8 @@ void InterpreterFactory::Interpreter::_body_thread(fun f, t_in in, Drainer drain
     //--*_n_thread;
 }
 
-
-void InterpreterFactory::Interpreter::_check_token_mutex(function<void()> f) {
+void Interpreter::_check_token_mutex(function<void()> f) {
     _token_mutex->lock();
     f();
     _token_mutex->unlock();
 }
-
-void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>> list, Drainer drainer) {
-    auto got = _gr.graph.find(name);
-    if (got != _gr.graph.end()) {
-        const Graph &g = got->second;
-        /*_int_thread.push_back(thread([](const Graph &g, initializer_list<shared_ptr<Token>> list, Drainer drainer){
-            Interpreter in(g);
-            initializer_list<shared_ptr<Token>> l = list;
-            in.start(l, drainer);
-        }, g, move(list), drainer));*/
-
-
-        //_int_thread.push_back(thread(&InterpreterFactory::Interpreter::start, move(in), move(v), move(drainer)));
-
-        vector<shared_ptr<Token>> v;
-        for (auto &i : list) {
-            v.push_back(i);
-        }
-        auto &tp = ThreadPool::getIstance();
-
-        tp.addValueTask([g,v,drainer](){
-            Interpreter in(g);
-            in.start(move(v),move(drainer));
-        });
-    } else {
-        //graph not finded
-    }
-}
-
-InterpreterFactory::~InterpreterFactory() {
-    //cout << "decostructor " << endl << flush;
-
-//    for (auto &item : _int_thread) {
-//        auto id = item.get_id();
-//        item.join();
-//        cout << "Interpreter thread joined: " << id << endl << flush;
-//    }
-}
-
-

@@ -68,6 +68,10 @@ public:
 
     Graph(initializer_list<Statement>);
 
+    ~Graph(){
+
+    }
+
     const int &id;
     const vector<Statement> &ist;
     const t_type_in &t_in;

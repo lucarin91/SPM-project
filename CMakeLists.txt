@@ -14,6 +14,6 @@ set(SOURCE_FILES
         Interpreter.cpp
         Interpreter.h
         SyncCout.cpp
-        SyncCout.h ThreadPool.cpp ThreadPool.h)
+        SyncCout.h ThreadPool.cpp ThreadPool.h InterpreterFactory.cpp InterpreterFactory.h)
 
 add_executable(SPM_project ${SOURCE_FILES})
