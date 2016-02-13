@@ -12,14 +12,9 @@
 using namespace std;
 
 class ThreadPool {
-    ThreadPool() : _run(true){ }
+    ThreadPool() : _run(true), _to_stop(false) { }
 
-    ~ThreadPool(){
-        //_run=false;
-        for(auto& t : _thread){
-            t.join();
-        }
-    }
+    ~ThreadPool();
 
     ThreadPool(ThreadPool const &) = delete;
 
@@ -34,19 +29,25 @@ class ThreadPool {
     vector<function<void()>> _eval_task;
     mutex _eval_task_mutex;
     atomic<bool> _run;
+    atomic<bool> _to_stop;
+    atomic<int> _n_task;
     vector<thread> _thread;
 
-    void _thread_body();
-public:
-    static int N;
+    void _thread_eval();
+    void _thread_exec();
 
-    static ThreadPool& getIstance(){
+public:
+    static int N_eval;
+    static int N_exec;
+
+    static ThreadPool &getIstance() {
         static ThreadPool instance;
         return instance;
     }
 
-    void addExecTask(function<void()>&&);
-    void addValueTask(function<void()>&&);
+    void addExecTask(function<void()> &&);
+
+    void addValueTask(function<void()> &&);
 
     void start();
 };

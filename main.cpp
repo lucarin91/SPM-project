@@ -8,7 +8,7 @@
 using namespace std;
 
 int main() {
-    SyncCout::setSync(true);
+    SyncCout::setSync(false);
     ThreadPool::getIstance().start();
 
     GraphRepository gr;
@@ -39,9 +39,9 @@ int main() {
         SyncCout::println(msg);
     };
     
-    for (int i = 1; i < 4; i++) {
-        inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, i)),
-                                 shared_ptr<Token>(new Token_value<int>(2, i))}, drain);
+    for (int i = 1; i < 2; i++) {
+        inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, 1)),
+                                 shared_ptr<Token>(new Token_value<int>(2, 1))}, drain);
     }
     return 0;
 }

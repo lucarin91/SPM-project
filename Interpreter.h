@@ -44,30 +44,36 @@ public:
 
         Interpreter &operator=(Interpreter const &) = delete;
 
+
     public:
+        ~Interpreter(){
+
+        }
         Interpreter(const Graph &_g) : _g(_g),
-                                       _n_thread(new atomic<int>(0)),
-                                       _token_mutex(new mutex()) { }
+                                       _t_in(_g.t_in),
+                                       _token_mutex(new mutex()),
+                                       _t_in_mutex(new mutex()) { }
 
         Interpreter(Interpreter &&in) : _g(move(in._g)),
+                                        _t_in(move(in._t_in)),
                                         _token(move(in._token)),
                                         _token_mutex(move(in._token_mutex)),
-                                        _fired_stm(move(in._fired_stm)),
-                                        _n_thread(move(in._n_thread)) { }
+                                        _t_in_mutex(move(in._t_in_mutex)),
+                                        _fired_stm(move(in._fired_stm)) { }
 
         //void start(initializer_list<shared_ptr<Token>>, Drainer);
         void start(t_in, Drainer);
 
     private:
         const Graph &_g;
+        const t_type_in &_t_in;
+        unique_ptr<mutex> _t_in_mutex;
 
         unordered_map<int, shared_ptr<Token>> _token;
         unique_ptr<mutex> _token_mutex;
 
         //unordered_map<int, vector<int>> _token_to_stm;
         unordered_set<int> _fired_stm;
-
-        unique_ptr<atomic<int>> _n_thread;
 
         void _check_token_mutex(function<void()> f);
 

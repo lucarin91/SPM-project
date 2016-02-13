@@ -17,16 +17,19 @@
 //}
 
 void InterpreterFactory::Interpreter::start(t_in list, Drainer drainer) {
-    _fired_stm.clear();
-    _token.clear();
+    //_fired_stm.clear();
+    //_token.clear();
 
     for (auto &item : list) {
         _token[item->id] = item;
     }
 
-    vector<thread> pt;
-    bool con = false;
+    //vector<thread> pt;
+    //bool con = false;
     //_check_token_mutex([this,&con](){con = _token.size() != 0;});
+    stringstream msg;
+    msg << "graph evalueted by: " << this_thread::get_id() << " ";
+    SyncCout::println(msg);
     while (_fired_stm.size() != _g.ist.size() /*|| *_n_thread>0*/) { //SYNC
 
         for (const Statement &stm : _g.ist) {
@@ -50,22 +53,23 @@ void InterpreterFactory::Interpreter::start(t_in list, Drainer drainer) {
                 }
 
                 if (ready) {
-
+                    _fired_stm.insert(stm.id);
                     for (const int &id : in_list) {
-                        //_check_token_mutex([this, &in, &id, &stm]() {
-                        in.push_back(_token[id]);
-                        _fired_stm.insert(stm.id);
-                        //_token.erase(id);
-                        //});
+                        _check_token_mutex([this, &in, &id, &stm]() {
+                            in.push_back(_token[id]);
+                            //_token.erase(id);
+                        });
                     }
 
-                    ++*_n_thread;
+                    //++*_n_thread;
                     //pt.push_back(thread(&Interpreter::_body_thread, this, stm.f, in, drainer));
 
                     auto &tp = ThreadPool::getIstance();
-                    tp.addExecTask([this, &stm, &in, &drainer](){
-                        this->_body_thread(stm.f,in,drainer);
+                    const fun &f = stm.f;
+                    tp.addExecTask([this, f, in, drainer](){
+                        _body_thread(f, in, drainer);
                     });
+//
                     //thread t (&Interpreter::_test, this, g, stm.f);
 //                auto t = stm.f(in);
 //
@@ -77,18 +81,18 @@ void InterpreterFactory::Interpreter::start(t_in list, Drainer drainer) {
 
                 }
             }
-            _check_token_mutex([this, &con]() { con = _token.size() != 0; });
+            //_check_token_mutex([this, &con]() { con = _token.size() != 0; });
         }
     }
 
 
-    for (auto &t : pt) {
-        auto id = t.get_id();
-        t.join();
-        stringstream s;
-        s << "Worker thread joined: " << id;
-        SyncCout::println(s);
-    }
+//    for (auto &t : pt) {
+//        auto id = t.get_id();
+//        t.join();
+//        stringstream s;
+//        s << "Worker thread joined: " << id;
+//        SyncCout::println(s);
+//    }
 }
 
 /*
@@ -117,20 +121,25 @@ void Interpreter::execute(shared_ptr<Token> ptr) {
 
 
 void InterpreterFactory::Interpreter::_body_thread(fun f, t_in in, Drainer drainer) {
-    //this_thread::sleep_for(chrono::milliseconds(1000));
+   //this_thread::sleep_for(chrono::milliseconds(1000));
     auto t = f(in);
     stringstream msg;
     msg << "function executed by: " << this_thread::get_id() << " ";
     SyncCout::println(msg);
     int id = t->id;
-    if (_g.t_in.find(id) == _g.t_in.end()) {
+    //_t_in_mutex->lock();
+    const auto &end = _t_in.end();
+    const auto &got = _t_in.find(id);
+    //_t_in_mutex->unlock();
+    if ( got == end ) {
+
         drainer(t);
     } else {
         _check_token_mutex([this, &id, &t]() {
             _token[id] = move(t); //SYNC
         });
     }
-    --*_n_thread;
+    //--*_n_thread;
 }
 
 
@@ -153,14 +162,15 @@ void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>> 
 
         //_int_thread.push_back(thread(&InterpreterFactory::Interpreter::start, move(in), move(v), move(drainer)));
 
+        vector<shared_ptr<Token>> v;
+        for (auto &i : list) {
+            v.push_back(i);
+        }
         auto &tp = ThreadPool::getIstance();
-        tp.addValueTask([&list,&drainer](){
+
+        tp.addValueTask([g,v,drainer](){
             Interpreter in(g);
-            vector<shared_ptr<Token>> v;
-            for (auto &i : list) {
-                v.push_back(i);
-            }
-            in.start(v,drainer);
+            in.start(move(v),move(drainer));
         });
     } else {
         //graph not finded
@@ -170,11 +180,11 @@ void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>> 
 InterpreterFactory::~InterpreterFactory() {
     //cout << "decostructor " << endl << flush;
 
-    for (auto &item : _int_thread) {
-        auto id = item.get_id();
-        item.join();
-        cout << "Interpreter thread joined: " << id << endl << flush;
-    }
+//    for (auto &item : _int_thread) {
+//        auto id = item.get_id();
+//        item.join();
+//        cout << "Interpreter thread joined: " << id << endl << flush;
+//    }
 }
 
 
