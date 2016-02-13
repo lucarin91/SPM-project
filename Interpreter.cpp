@@ -64,8 +64,9 @@ void Interpreter::start(t_in list, Drainer drainer) {
 
                     auto &tp = ThreadPool::getIstance();
                     const fun &f = stm.f;
-                    tp.addExecTask([this, f, in, drainer]() {
-                        _body_thread(f, in, drainer);
+                    auto p = shared_from_this();
+                    tp.addExecTask([p, f, in, drainer]() {
+                        p->_body_thread(f, in, drainer);
                     });
 //
                     //thread t (&Interpreter::_test, this, g, stm.f);

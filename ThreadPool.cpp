@@ -5,7 +5,7 @@
 #include "ThreadPool.h"
 
 int ThreadPool::N_eval = 1;
-int ThreadPool::N_exec = 1;
+int ThreadPool::N_exec = 3;
 
 void ThreadPool::start(){
     for (int i=0; i < N_eval; i++)

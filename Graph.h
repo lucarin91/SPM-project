@@ -41,7 +41,7 @@ private:
 };
 
 class Graph {
-    Graph(Graph &) = delete;
+    Graph(const Graph &) = delete;
 
     Graph &operator=(Graph const &) = delete;
 
@@ -55,7 +55,7 @@ class Graph {
     void _update_t_in_out(const t_type_in&, const t_type_out&);
 
 public:
-    Graph(Graph const &g): id(_id), ist(_ist), t_in(_t_in), t_out(_t_out),
+    Graph(Graph &g): id(_id), ist(_ist), t_in(_t_in), t_out(_t_out),
                            _id(g._id), _ist(g._ist), _t_in(g._t_in), _t_out(g._t_out) { }
 
     Graph(Graph &&g) : id(_id), ist(_ist), t_in(_t_in), t_out(_t_out),

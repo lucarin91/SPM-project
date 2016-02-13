@@ -15,7 +15,7 @@
 using namespace std;
 typedef function<void(shared_ptr<Token>)> Drainer;
 
-class Interpreter {
+class Interpreter : public enable_shared_from_this<Interpreter>{
     Interpreter(Interpreter const &) = delete;
 
     Interpreter(Interpreter &) = delete;
@@ -23,7 +23,9 @@ class Interpreter {
     Interpreter &operator=(Interpreter const &) = delete;
 
 public:
-    ~Interpreter() { }
+    ~Interpreter() {
+
+    }
 
     Interpreter(shared_ptr<Graph> g) : _g(g),
                                    //_t_in(_g.t_in),

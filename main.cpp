@@ -8,14 +8,14 @@ using namespace std;
 
 int main() {
     SyncCout::setSync(true);
-    ThreadPool::getIstance().start();
+
 
     shared_ptr<GraphRepository> gr (new GraphRepository());
     gr->add("test", {
-            /*Statement([](t_in in_ptr) -> t_out {
+            Statement([](t_in in_ptr) -> t_out {
                 auto &in = static_cast<Token_value<int> &> (*in_ptr[0]);
                 return shared_ptr<Token_value<int>>(new Token_value<int>(4, in.value * 2));
-            }, {3}, 4),*/
+            }, {3}, 4),
 
             Statement([](t_in in_ptr) -> t_out {
                 auto &in = static_cast<Token_value<int> &> (*in_ptr[0]);
@@ -37,10 +37,14 @@ int main() {
         msg << "drainer: " << "token: " << tv.id << " value: " << tv.value;
         SyncCout::println(msg);
     };
-    
-    //for (int i = 0; i < 4; i++) {
+
+    ThreadPool::N_eval = 2;
+    ThreadPool::N_exec = 4;
+    ThreadPool::getIstance().start();
+
+    for (int i = 0; i < 30; i++) {
         inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, 1)),
                                  shared_ptr<Token>(new Token_value<int>(2, 1))}, drain);
-    //}
+    }
     return 0;
 }
