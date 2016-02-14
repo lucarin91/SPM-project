@@ -4,14 +4,16 @@
 
 #include "ThreadPool.h"
 
-int ThreadPool::N_eval = 1;
-int ThreadPool::N_exec = 3;
+int ThreadPool::_n_eval = 0;
+int ThreadPool::_n_exec = 0;
+const int &ThreadPool::n_exec( _n_exec);
+const int &ThreadPool::n_eval (_n_eval);
 
 void ThreadPool::start(){
-    for (int i=0; i < N_eval; i++)
+    for (int i=0; i < _n_eval; i++)
         _thread.push_back(thread(&ThreadPool::_thread_eval, this));
 
-    for (int i=0; i < N_exec; i++)
+    for (int i=0; i < _n_exec; i++)
         _thread.push_back(thread(&ThreadPool::_thread_exec, this));
 
 //    for (auto &t : _thread){
@@ -69,4 +71,12 @@ ThreadPool::~ThreadPool() {
     for (auto &t : _thread) {
         t.join();
     }
+}
+
+void ThreadPool::_set_num_thread() {
+    auto N = thread::hardware_concurrency();
+    if (N==0) N = sysconf( _SC_NPROCESSORS_ONLN );
+    if (N==0) N = 2;
+    _n_eval = ceil((N * 25) / 100);
+    _n_exec = N - _n_eval;
 }

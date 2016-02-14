@@ -9,7 +9,6 @@ using namespace std;
 int main() {
     SyncCout::setSync(true);
 
-
     shared_ptr<GraphRepository> gr (new GraphRepository());
     gr->add("test", {
             Statement([](t_in in_ptr) -> t_out {
@@ -30,6 +29,7 @@ int main() {
     });
 
     InterpreterFactory inFactory(gr);
+    cout << "N thread " << ThreadPool::n_eval << " " << ThreadPool::n_exec << endl;
 
     function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
         auto &tv = static_cast<Token_value<int> &> (*t);
@@ -37,10 +37,6 @@ int main() {
         msg << "drainer: " << "token: " << tv.id << " value: " << tv.value;
         SyncCout::println(msg);
     };
-
-    ThreadPool::N_eval = 2;
-    ThreadPool::N_exec = 4;
-    ThreadPool::getIstance().start();
 
     for (int i = 0; i < 30; i++) {
         inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, 1)),

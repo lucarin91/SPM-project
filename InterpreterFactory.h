@@ -31,8 +31,15 @@ class InterpreterFactory {
 
     shared_ptr<GraphRepository> _gr;
 
+
 public:
-    InterpreterFactory(shared_ptr<GraphRepository> g) : _gr(g) { }
+    InterpreterFactory(shared_ptr<GraphRepository> g, int n_eval, int n_exec) : _gr(g) {
+        ThreadPool::getIstance(n_eval,n_exec).start();
+    }
+
+    InterpreterFactory(shared_ptr<GraphRepository> g) : _gr(g) {
+        ThreadPool::getIstance().start();
+    }
 
     ~InterpreterFactory();
 
