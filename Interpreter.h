@@ -29,14 +29,12 @@ public:
 
     Interpreter(shared_ptr<Graph> g) : _g(g),
                                    //_t_in(_g.t_in),
-                                   _token_mutex(new mutex()),
-                                   _t_in_mutex(new mutex()) { }
+                                   _token_mutex(new mutex()) { }
 
     Interpreter(Interpreter &&in) : _g(move(in._g)),
                                     //_t_in(move(in._t_in)),
                                     _token(move(in._token)),
                                     _token_mutex(move(in._token_mutex)),
-                                    _t_in_mutex(move(in._t_in_mutex)),
                                     _fired_stm(move(in._fired_stm)) { }
 
     //void start(initializer_list<shared_ptr<Token>>, Drainer);
@@ -44,8 +42,6 @@ public:
 
 private:
     shared_ptr<Graph> _g;
-    //shared_ptr<t_type_in> _t_in;
-    unique_ptr<mutex> _t_in_mutex;
 
     unordered_map<int, shared_ptr<Token>> _token;
     unique_ptr<mutex> _token_mutex;
