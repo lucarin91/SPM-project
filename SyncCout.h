@@ -6,6 +6,7 @@
 #define SPM_PROJECT_SYNCCOUT_H
 #include <iostream>
 #include <sstream>
+#include <mutex>
 
 using namespace std;
 

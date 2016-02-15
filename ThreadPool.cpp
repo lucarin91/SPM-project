@@ -2,6 +2,7 @@
 // Created by luca on 12/02/2016.
 //
 
+#include <unistd.h>
 #include "ThreadPool.h"
 
 void ThreadPool::_start() {
