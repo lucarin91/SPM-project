@@ -26,15 +26,20 @@ struct Statement {
     fun f;
     t_type_in in;
     t_type_out out;
-    int miss;
     const int &id;
 
     Statement(fun f, t_type_in in, t_type_out out) :
             id(_id), _id(_ID++),
             f(f),
             in(in),
-            out(out),
-            miss(in.size()) { };
+            out(out) { };
+
+    Statement &operator=(const Statement &s){
+        f = s.f;
+        in = s.in;
+        out = s.out;
+        return *this;
+    }
 private:
     static int _ID;
     int _id;

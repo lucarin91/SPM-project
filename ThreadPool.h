@@ -6,9 +6,9 @@
 #define SPM_PROJECT_THREADPOOL_H
 
 #include <memory>
-#include <future>
 #include <vector>
 #include <cmath>
+#include <thread>
 
 using namespace std;
 

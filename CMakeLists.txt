@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
 project(SPM_project)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES
         main.cpp
@@ -14,6 +14,10 @@ set(SOURCE_FILES
         Interpreter.cpp
         Interpreter.h
         SyncCout.cpp
-        SyncCout.h ThreadPool.cpp ThreadPool.h InterpreterFactory.cpp InterpreterFactory.h)
+        SyncCout.h
+        ThreadPool.cpp
+        ThreadPool.h
+        InterpreterFactory.cpp
+        InterpreterFactory.h)
 
 add_executable(SPM_project ${SOURCE_FILES})
