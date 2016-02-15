@@ -4,13 +4,17 @@
 
 #include "Interpreter.h"
 
-Interpreter::Interpreter(ThreadPool &tp, shared_ptr<Graph> g, initializer_list<shared_ptr<Token>>&& list, Drainer&& d) :
+Interpreter::Interpreter(ThreadPool &tp, shared_ptr<Graph> g, initializer_list<Token>&& list, Drainer&& d) :
         _tp(tp),
         _g(g),
         _drainer(d),
         _token_mutex(new mutex()) {
-    for (auto &t : list) {
-        _token[t->id] = t;
+
+
+    for (const Token &t : list) {
+        Token t1(t);
+        auto id = t.id;
+        _token.insert(make_pair<int,Token>(move(id),move(t1)));
     }
 }
 
@@ -44,14 +48,15 @@ void Interpreter::eval() {
                 _fired_stm.insert(stm.id);
                 for (const int &id : in_list) {
                     _check_token_mutex([this, &in, &id, &stm]() {
-                        in.push_back(_token[id]);
+                        Token t1 (_token[id]);
+                        in.push_back(move(t1));
                     });
                 }
 
                 const fun &f = stm.f;
                 auto p = shared_from_this();
                 _tp.addTask([p, f, in]() {
-                    p->_exec_function(f, in);
+                    p->_exec_function(f, move(in));
                 });
             }
         }
@@ -67,12 +72,14 @@ void Interpreter::_exec_function(fun f, t_in in) {
     msg << "function executed by: " << this_thread::get_id();
     SyncCout::println(msg);
 
-    int id = t->id;
+    int id = t.id;
     if (_g->t_in.find(id) == _g->t_in.end()) {
         _drainer(t);
     } else {
         _check_token_mutex([this, &id, &t]() {
             _token[id] = move(t); //SYNC
+            //auto id = t.id;
+            //_token.insert(make_pair(move(id),move(t)));
         });
 
         auto p = shared_from_this();

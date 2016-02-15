@@ -14,13 +14,12 @@
 
 using namespace std;
 
-typedef vector<shared_ptr<Token>> t_in;
-typedef shared_ptr<Token> t_out;
-
 typedef unordered_set<int> t_type_in;
 typedef int t_type_out;
 
-typedef std::function<t_out(t_in)> fun;
+typedef vector<Token> t_in;
+typedef Token t_out;
+typedef function<t_out(t_in)> fun;
 
 struct Statement {
     fun f;

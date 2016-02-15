@@ -16,7 +16,7 @@
 #include "ThreadPool.h"
 
 using namespace std;
-typedef function<void(shared_ptr<Token>)> Drainer;
+typedef function<void(Token&)> Drainer;
 
 class InterpreterFactory {
     InterpreterFactory(InterpreterFactory const &) = delete;
@@ -35,7 +35,7 @@ public:
 
     InterpreterFactory(shared_ptr<GraphRepository> g): InterpreterFactory(g,0) { }
 
-    void start(string name, initializer_list<shared_ptr<Token>>&& , Drainer);
+    void start(string name, initializer_list<Token>&& , Drainer);
 
     const int &n_thread;
 
