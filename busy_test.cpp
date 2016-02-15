@@ -10,20 +10,33 @@ int main(int argc, char* argv[]) {
 
     shared_ptr<GraphRepository> gr (new GraphRepository());
     gr->add("test", {
+
             Statement([](t_in in_ptr) -> t_out {
-                auto &in = static_cast<Token_value<int> &> (*in_ptr[0]);
-                return shared_ptr<Token_value<int>>(new Token_value<int>(4, in.value * 2));
+                auto &in = static_cast<Token_value<double> &> (*in_ptr[0]);
+                shared_ptr<Token_value<double>> res(new Token_value<double>(4, in.value * 2));
+                for (int i=0;i<10000;i++){
+                    res->set(sin(res->value));
+                }
+                return res;
             }, {3}, 4),
 
             Statement([](t_in in_ptr) -> t_out {
-                auto &in = static_cast<Token_value<int> &> (*in_ptr[0]);
-                return shared_ptr<Token_value<int>>(new Token_value<int>(5, in.value * 3));
+                auto &in = static_cast<Token_value<double> &> (*in_ptr[0]);
+                shared_ptr<Token_value<double>> res(new Token_value<double>(5, in.value * 3));
+                for (int i=0;i<10000;i++){
+                    res->set(sin(res->value));
+                }
+                return res;
             }, {3}, 5),
 
             Statement([](t_in in_ptr) -> t_out {
                 auto &in1 = static_cast<Token_value<int> &> (*in_ptr[0]);
                 auto &in2 = static_cast<Token_value<int> &> (*in_ptr[1]);
-                return shared_ptr<Token_value<int>>(new Token_value<int>(3, in1.value + in2.value));
+                shared_ptr<Token_value<double>> res(new Token_value<double>(3, in1.value + in2.value));
+                for (int i=0;i<10000;i++){
+                    res->set(sin(res->value));
+                }
+                return res;
             }, {1, 2}, 3)
     });
 
@@ -31,7 +44,7 @@ int main(int argc, char* argv[]) {
     //cout << "N thread " << inFactory.n_thread << endl;
 
     function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
-        auto &tv = static_cast<Token_value<int> &> (*t);
+        auto &tv = static_cast<Token_value<double> &> (*t);
 #ifndef NO_PRINT
         stringstream msg;
         msg << "drainer: " << "token: " << tv.id << " value: " << tv.value;

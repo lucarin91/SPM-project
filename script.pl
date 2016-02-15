@@ -1,20 +1,20 @@
 #!/bin/perl -w
 use warnings;
 use strict;
-use constant N => 5;
-my $SIZE = 2048;
-my $STEP = 1000;
+use constant N => 10;
+my $filename = shift or die "Usage: $0 FILENAME NUMBER\n";
+my $size = shift or die "Usage: $0 FILENAME NUMBER\n";
 my @json = ();
 
 print "[\n";
-foreach my $p (10,12,14,16,18,20,25,30,35,40,50,60,80) {
+foreach my $p (1,2,3,4,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80) {
   my $sum=0;
   my @timings = ();
 
   print STDERR "$p: ";
   foreach my $i (1..N) {
     #\time --format="%E" ./main.out --step 1000 --height 1000 --width 1000 --thread 16
-    my $r=`\\ssh mic1 "TIMEFORMAT=%R && time ./main.out $SIZE $STEP $p" 2>&1`;
+    my $r=`\\ssh mic1 "TIMEFORMAT=%R && time ./$filename $p $size" 2>&1`;
     $sum=$sum + $r;
     $r =~ s/^\s+|\s+$//g;
     push @timings, $r;
