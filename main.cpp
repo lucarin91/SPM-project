@@ -1,12 +1,15 @@
 #include <iostream>
 #include <sstream>
+#include <memory>
 #include "GraphRepository.h"
 #include "InterpreterFactory.h"
 
 using namespace std;
 
-int main() {
+int main(int argc, char* argv[]) {
+#ifndef NO_PRINT
     SyncCout::setSync(true);
+#endif
 
     shared_ptr<GraphRepository> gr (new GraphRepository());
     gr->add("test", {
@@ -27,15 +30,16 @@ int main() {
             }, {1, 2}, 3)
     });
 
-    InterpreterFactory inFactory(gr,1);
-    //InterpreterFactory inFactory(gr);
-    cout << "N thread " << inFactory.n_thread << endl;
+    InterpreterFactory inFactory(gr,(argc>1?stoi(argv[1]):0));
+    //cout << "N thread " << inFactory.n_thread << endl;
 
     function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
         auto &tv = static_cast<Token_value<int> &> (*t);
+#ifndef NO_PRINT
         stringstream msg;
         msg << "drainer: " << "token: " << tv.id << " value: " << tv.value;
         SyncCout::println(msg);
+#endif
     };
 
     for (int i = 0; i < 5; i++) {

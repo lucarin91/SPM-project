@@ -15,11 +15,11 @@ Interpreter::Interpreter(ThreadPool &tp, shared_ptr<Graph> g, initializer_list<s
 }
 
 void Interpreter::eval() {
-
+#ifndef NO_PRINT
     stringstream msg;
     msg << "graph evalueted by: " << this_thread::get_id();
     SyncCout::println(msg);
-
+#endif
     for (const Statement &stm : _g->ist) {
         if (_fired_stm.find(stm.id) == _fired_stm.end()) {
             bool ready = true;
@@ -62,11 +62,11 @@ void Interpreter::eval() {
 void Interpreter::_exec_function(fun f, t_in in) {
 
     auto t = f(in);
-
+#ifndef NO_PRINT
     stringstream msg;
     msg << "function executed by: " << this_thread::get_id();
     SyncCout::println(msg);
-
+#endif
     int id = t->id;
     if (_g->t_in.find(id) == _g->t_in.end()) {
         _drainer(t);
