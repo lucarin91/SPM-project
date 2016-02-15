@@ -5,10 +5,12 @@
 #ifndef SPM_PROJECT_THREADPOOL_H
 #define SPM_PROJECT_THREADPOOL_H
 
+#include <iostream>
 #include <memory>
 #include <vector>
 #include <cmath>
 #include <thread>
+#include <atomic>
 
 using namespace std;
 

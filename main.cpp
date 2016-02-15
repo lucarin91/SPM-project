@@ -27,8 +27,8 @@ int main() {
             }, {1, 2}, 3)
     });
 
-    //InterpreterFactory inFactory(gr,20);
-    InterpreterFactory inFactory(gr);
+    InterpreterFactory inFactory(gr,1);
+    //InterpreterFactory inFactory(gr);
     cout << "N thread " << inFactory.n_thread << endl;
 
     function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
@@ -38,7 +38,7 @@ int main() {
         SyncCout::println(msg);
     };
 
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 5; i++) {
         inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, 1)),
                                  shared_ptr<Token>(new Token_value<int>(2, 1))}, drain);
     }

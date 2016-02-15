@@ -2,7 +2,6 @@
 // Created by luca on 12/02/2016.
 //
 
-#include <unistd.h>
 #include "ThreadPool.h"
 
 void ThreadPool::_start() {
@@ -22,7 +21,9 @@ void ThreadPool::_body_thread() {
         } else {
             _task_mutex.unlock();
         }
+        //cout << endl << "...task... " << _to_stop << " " << _n_task << endl << endl;
     }
+    //cout << endl << "...end--_body_thread.." << endl << endl;
 }
 
 void ThreadPool::addTask(function<void()> &&f) {
@@ -33,10 +34,14 @@ void ThreadPool::addTask(function<void()> &&f) {
 }
 
 ThreadPool::~ThreadPool() {
+    //cout << endl << "destructur ThreadPool" << endl << endl;
     _to_stop = true;
     for (auto &t : _thread) {
+        //cout << "join..." << endl;
         t.join();
+        //cout << "...join executed!" << endl;
     }
+    //cout << "END!" << endl;
 }
 
 int ThreadPool::_get_num_thread() {
@@ -46,7 +51,7 @@ int ThreadPool::_get_num_thread() {
     return n;
 }
 
-ThreadPool::ThreadPool(int n) : _to_stop(false), n_thread(_n_thread) {
+ThreadPool::ThreadPool(int n) : _to_stop(false), _n_task(0), n_thread(_n_thread) {
     _n_thread = n >= 1 ? n : _get_num_thread();
     _start();
 }

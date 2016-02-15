@@ -39,6 +39,10 @@ public:
 
     const int &n_thread;
 
+    ~InterpreterFactory(){
+        //cout << endl << "destructur InterpreterFactory" << endl << endl;
+    }
+
 };
 
 #endif //SPM_PROJECT_INTERPRETERFACTORY_H

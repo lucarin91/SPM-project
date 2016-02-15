@@ -28,6 +28,7 @@ public:
     void add(string, initializer_list<Statement>);
 
     const unordered_map<string, shared_ptr<Graph>> &graph;
+
     ~GraphRepository(){
 
     }
