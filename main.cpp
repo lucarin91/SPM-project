@@ -7,9 +7,6 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-#ifndef NO_PRINT
-    SyncCout::setSync(true);
-#endif
 
     shared_ptr<GraphRepository> gr (new GraphRepository());
     gr->add("test", {
@@ -42,7 +39,7 @@ int main(int argc, char* argv[]) {
 #endif
     };
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 30; i++) {
         inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, 1)),
                                  shared_ptr<Token>(new Token_value<int>(2, 1))}, drain);
     }
