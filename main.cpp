@@ -2,7 +2,6 @@
 #include <sstream>
 #include "GraphRepository.h"
 #include "InterpreterFactory.h"
-#include "SyncCout.h"
 
 using namespace std;
 
