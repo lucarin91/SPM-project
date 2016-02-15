@@ -13,10 +13,6 @@
 using namespace std;
 
 class ThreadPool {
-    ThreadPool() : _to_stop(false) { }
-
-    ~ThreadPool();
-
     ThreadPool(ThreadPool const &) = delete;
 
     ThreadPool(ThreadPool &) = delete;
@@ -25,52 +21,30 @@ class ThreadPool {
 
     ThreadPool &operator=(ThreadPool const &) = delete;
 
-    static int _n_eval;
-    static int _n_exec;
+    int _n_thread;
 
-    vector<function<void()>> _exec_task;
-    mutex _exec_task_mutex;
-    vector<function<void()>> _eval_task;
-    mutex _eval_task_mutex;
+    vector<function<void()>> _task;
+    mutex _task_mutex;
 
     atomic<bool> _to_stop;
     atomic<int> _n_task;
     vector<thread> _thread;
 
-    void _thread_eval();
-    void _thread_exec();
-    static void _set_num_thread();
-
-    static ThreadPool &_create(){
-        static ThreadPool instance;
-        return instance;
-    }
+    void _body_thread();
+    int _get_num_thread();
+    void _start();
 
 public:
+    ThreadPool(int n);
 
-    static const int &n_eval;
-    static const int &n_exec;
+    ThreadPool();
 
-    static ThreadPool &getIstance() {
-        if (!_n_eval && !_n_exec)
-            _set_num_thread();
-        return _create();
-    }
+    ~ThreadPool();
 
-    static ThreadPool &getIstance(int e, int x) {
-        if (e>=1 && x>=1) {
-            _n_eval = e;
-            _n_exec = x;
-        }else
-            _set_num_thread();
-        return _create();
-    }
+    const int &n_thread;
 
-    void addExecTask(function<void()> &&);
-
-    void addValueTask(function<void()> &&);
-
-    void start();
+    void addTask(function<void()> &&);
+    
 };
 
 

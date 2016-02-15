@@ -27,23 +27,17 @@ class InterpreterFactory {
 
     InterpreterFactory &operator=(InterpreterFactory const &) = delete;
 
-    //vector<thread> _int_thread;
-
     shared_ptr<GraphRepository> _gr;
-
+    ThreadPool _tp;
 
 public:
-    InterpreterFactory(shared_ptr<GraphRepository> g, int n_eval, int n_exec) : _gr(g) {
-        ThreadPool::getIstance(n_eval,n_exec).start();
-    }
+    InterpreterFactory(shared_ptr<GraphRepository> g, int n) : _gr(g), _tp(n), n_thread(_tp.n_thread){ }
 
-    InterpreterFactory(shared_ptr<GraphRepository> g) : _gr(g) {
-        ThreadPool::getIstance().start();
-    }
+    InterpreterFactory(shared_ptr<GraphRepository> g): InterpreterFactory(g,0) { }
 
-    ~InterpreterFactory();
+    void start(string name, initializer_list<shared_ptr<Token>>&& , Drainer);
 
-    void start(string name, initializer_list<shared_ptr<Token>>, Drainer);
+    const int &n_thread;
 
 };
 

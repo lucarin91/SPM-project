@@ -28,8 +28,8 @@ int main() {
             }, {1, 2}, 3)
     });
 
-    InterpreterFactory inFactory(gr);
-    cout << "N thread " << ThreadPool::n_eval << " " << ThreadPool::n_exec << endl;
+    InterpreterFactory inFactory(gr,20);
+    cout << "N thread " << inFactory.n_thread << endl;
 
     function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
         auto &tv = static_cast<Token_value<int> &> (*t);

@@ -4,43 +4,18 @@
 
 #include "InterpreterFactory.h"
 
-void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>> list, Drainer drainer) {
+void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>>&& list, Drainer drainer) {
     auto got = _gr->graph.find(name);
     if (got != _gr->graph.end()) {
         auto g = got->second;
-        /*_int_thread.push_back(thread([](const Graph &g, initializer_list<shared_ptr<Token>> list, Drainer drainer){
-            Interpreter in(g);
-            initializer_list<shared_ptr<Token>> l = list;
-            in.start(l, drainer);
-        }, g, move(list), drainer));*/
 
-
-        //_int_thread.push_back(thread(&InterpreterFactory::Interpreter::start, move(in), move(v), move(drainer)));
-
-        vector<shared_ptr<Token>> v;
-        for (auto &i : list) {
-            v.push_back(i);
-        }
-        auto &tp = ThreadPool::getIstance();
-        shared_ptr<Graph> g_ptr (new Graph(*g));
-        shared_ptr<Interpreter> inter (new Interpreter(g_ptr));
-        tp.addValueTask([inter,v,drainer](){
-            //Interpreter in(g);
-            inter->start(move(v),move(drainer));
+        shared_ptr<Interpreter> inter (new Interpreter(_tp, g, move(list), move(drainer)));
+        _tp.addTask([inter]() {
+            inter->eval();
         });
     } else {
         //graph not finded
     }
-}
-
-InterpreterFactory::~InterpreterFactory() {
-    //cout << "decostructor " << endl << flush;
-
-//    for (auto &item : _int_thread) {
-//        auto id = item.get_id();
-//        item.join();
-//        cout << "Interpreter thread joined: " << id << endl << flush;
-//    }
 }
 
 

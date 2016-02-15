@@ -11,14 +11,16 @@
 #include <atomic>
 #include "GraphRepository.h"
 #include "InterpreterFactory.h"
+#include "ThreadPool.h"
 
 using namespace std;
 typedef function<void(shared_ptr<Token>)> Drainer;
 
-class Interpreter : public enable_shared_from_this<Interpreter>{
+class Interpreter : public enable_shared_from_this<Interpreter> {
     Interpreter(Interpreter const &) = delete;
 
     Interpreter(Interpreter &) = delete;
+    Interpreter(Interpreter &&) = delete;
 
     Interpreter &operator=(Interpreter const &) = delete;
 
@@ -27,21 +29,25 @@ public:
 
     }
 
-    Interpreter(shared_ptr<Graph> g) : _g(g),
-                                   //_t_in(_g.t_in),
-                                   _token_mutex(new mutex()) { }
+    Interpreter(ThreadPool& _tp, shared_ptr<Graph> g, initializer_list<shared_ptr<Token>>&&, Drainer&& d);
 
-    Interpreter(Interpreter &&in) : _g(move(in._g)),
-                                    //_t_in(move(in._t_in)),
-                                    _token(move(in._token)),
-                                    _token_mutex(move(in._token_mutex)),
-                                    _fired_stm(move(in._fired_stm)) { }
+//    Interpreter(Interpreter &&in) : _g(move(in._g)),
+//                                    _tp(move(in._tp)),
+//                                    _drainer(move(in._drainer)),
+//                                    _token(move(in._token)),
+//                                    _token_mutex(move(in._token_mutex)),
+//                                    _fired_stm(move(in._fired_stm)) { }
 
     //void start(initializer_list<shared_ptr<Token>>, Drainer);
-    void start(t_in, Drainer);
+    //void start(t_in);
+
+    void eval();
+
 
 private:
+    ThreadPool& _tp;
     shared_ptr<Graph> _g;
+    Drainer _drainer;
 
     unordered_map<int, shared_ptr<Token>> _token;
     unique_ptr<mutex> _token_mutex;
@@ -50,11 +56,9 @@ private:
     unordered_set<int> _fired_stm;
 
     void _check_token_mutex(function<void()> f);
-
-    //void _start(Drainer function1);
     //shared_ptr<Token> _get_token_type(int);
 
-    void _body_thread(fun, t_in, Drainer);
+    void _exec_function(fun, t_in);
 };
 
 
