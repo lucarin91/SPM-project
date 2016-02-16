@@ -25,11 +25,17 @@ public:
 
     //~Token(){};
 
+    Token(bool r = false) : Token(-1, r) { }
+
     Token(int name, bool r = false) : ready(_ready), id(_id),
                                       _ready(r), _id(name) { }
 
     Token(const Token &t) : ready(_ready), id(_id),
                             _ready(t._ready), _id(t._id) { }
+
+    void set_id(int id){
+        _id = id;
+    }
 
 };
 
@@ -45,9 +51,11 @@ class Token_value : public Token {
 public:
     // ~Token_value(){};
 
-    Token_value(int name) : Token(name), value(_value) { }
+    Token_value() : Token(), value(_value) { }
 
     Token_value(int name, T v) : Token(name, true), value(_value), _value(v) { }
+
+    Token_value(T v) : Token(true), value(_value), _value(v) { }
 
     Token_value(const Token_value &t) : Token(t.id),
                                         value(_value),

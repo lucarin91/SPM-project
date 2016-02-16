@@ -44,3 +44,17 @@ set_target_properties(busy_test_mic PROPERTIES LINK_FLAGS "-mmic" )
 target_compile_definitions(busy_test_mic PRIVATE NO_PRINT)
 add_custom_command(TARGET busy_test_mic POST_BUILD COMMAND scp busy_test_mic mic1:)
 
+
+add_executable(free_test free_test.cpp ${SOURCE_FILES})
+
+add_executable(free_test_no_print free_test.cpp ${SOURCE_FILES})
+target_compile_definitions(free_test_no_print PRIVATE NO_PRINT)
+
+add_executable(free_test_mic free_test.cpp ${SOURCE_FILES})
+set_target_properties(free_test_mic PROPERTIES COMPILE_FLAGS "-mmic" )
+set_target_properties(free_test_mic PROPERTIES LINK_FLAGS "-mmic" )
+target_compile_definitions(free_test_mic PRIVATE NO_PRINT)
+add_custom_command(TARGET free_test_mic POST_BUILD COMMAND scp free_test_mic mic1:)
+
+
+

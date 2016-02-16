@@ -56,7 +56,7 @@ private:
     void _check_ready_ist_mutex(function<void()> f);
     void _fire_ist(int);
 
-    void _exec_function(fun, t_in);
+    void _exec_function(Statement ist, t_in);
 };
 
 

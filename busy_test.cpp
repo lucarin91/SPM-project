@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
 
             Statement([](t_in in_ptr) -> t_out {
                 auto &in = static_cast<Token_value<double> &> (*in_ptr[0]);
-                shared_ptr<Token_value<double>> res(new Token_value<double>(4, in.value * 2));
+                shared_ptr<Token_value<double>> res(new Token_value<double>(in.value * 2));
                 for (int i=0;i<10000;i++){
                     res->set(sin(res->value));
                 }
@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
 
             Statement([](t_in in_ptr) -> t_out {
                 auto &in = static_cast<Token_value<double> &> (*in_ptr[0]);
-                shared_ptr<Token_value<double>> res(new Token_value<double>(5, in.value * 3));
+                shared_ptr<Token_value<double>> res(new Token_value<double>(in.value * 3));
                 for (int i=0;i<10000;i++){
                     res->set(sin(res->value));
                 }
@@ -32,12 +32,22 @@ int main(int argc, char* argv[]) {
             Statement([](t_in in_ptr) -> t_out {
                 auto &in1 = static_cast<Token_value<int> &> (*in_ptr[0]);
                 auto &in2 = static_cast<Token_value<int> &> (*in_ptr[1]);
-                shared_ptr<Token_value<double>> res(new Token_value<double>(3, in1.value + in2.value));
+                shared_ptr<Token_value<double>> res(new Token_value<double>(in1.value + in2.value));
                 for (int i=0;i<10000;i++){
                     res->set(sin(res->value));
                 }
                 return res;
-            }, {1, 2}, 3)
+            }, {1, 2}, 3),
+
+            Statement([](t_in in_ptr) -> t_out {
+                auto &in1 = static_cast<Token_value<int> &> (*in_ptr[0]);
+                auto &in2 = static_cast<Token_value<int> &> (*in_ptr[1]);
+                shared_ptr<Token_value<double>> res(new Token_value<double>(in1.value * in2.value));
+                for (int i=0;i<10000;i++){
+                    res->set(sin(res->value));
+                }
+                return res;
+            }, {4, 5}, 6)
     });
 
     InterpreterFactory inFactory(gr,(argc>1?stoi(argv[1]):0));

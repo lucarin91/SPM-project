@@ -1,0 +1,11 @@
+README.md
+upload.sh
+.git
+.gitignore
+.idea
+*.o
+*.out
+build
+tmp
+bin
+

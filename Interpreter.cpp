@@ -70,17 +70,17 @@ void Interpreter::eval() {
 
 }
 
-void Interpreter::_exec_function(fun f, t_in in) {
+void Interpreter::_exec_function(Statement ist, t_in in) {
 
-    auto t = f(in);
+    auto t = ist.f(in);
 
 #ifndef NO_PRINT
     stringstream msg;
     msg << "function executed by: " << this_thread::get_id();
     SyncCout::println(msg);
 #endif
-
-    int id = t->id;
+    int id = ist.out;
+    t->set_id(ist.out);
 
     _check_token_mutex([this, &id, &t]() {
         _token[id] = move(t); //SYNC
@@ -139,10 +139,10 @@ void Interpreter::_fire_ist(int t_id) {
                     });
                 }
 
-                const fun &f = _g->ist[ist_id].f;
+                const Statement &ist = _g->ist[ist_id];
                 auto p = shared_from_this();
-                _tp.addTask([p, f, in]() {
-                    p->_exec_function(f, in);
+                _tp.addTask([p, ist, in]() {
+                    p->_exec_function(ist, in);
                 });
             } else {
                 _count_ist_mutex->unlock();
