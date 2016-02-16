@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
             }, {2}, 3),
 
             Statement([](t_in in_ptr) -> t_out {
-                auto &in = static_cast<Token_value<double> &> (*in_ptr[0]);
+                auto &in = static_cast<Token_value<int> &> (*in_ptr[0]);
                 return shared_ptr<Token_value<int>> (new Token_value<int>(in.value));
             }, {3}, 4)
 
@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     };
 
     for (int i = 0; i < (argc>2?stoi(argv[2]):100); i++) {
-        inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, 10))}, drain);
+        inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, i))}, drain);
     }
     return 0;
 }

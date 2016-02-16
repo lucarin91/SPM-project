@@ -55,6 +55,3 @@ set_target_properties(free_test_mic PROPERTIES COMPILE_FLAGS "-mmic" )
 set_target_properties(free_test_mic PROPERTIES LINK_FLAGS "-mmic" )
 target_compile_definitions(free_test_mic PRIVATE NO_PRINT)
 add_custom_command(TARGET free_test_mic POST_BUILD COMMAND scp free_test_mic mic1:)
-
-
-
