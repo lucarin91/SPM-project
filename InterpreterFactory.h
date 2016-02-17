@@ -39,8 +39,8 @@ public:
 
     const int &n_thread;
 
-    ~InterpreterFactory(){
-        //cout << endl << "destructur InterpreterFactory" << endl << endl;
+    void wait(){
+        _tp.stop();
     }
 
 };

@@ -17,7 +17,8 @@ set(SOURCE_FILES
         ThreadPool.cpp
         ThreadPool.h
         InterpreterFactory.cpp
-        InterpreterFactory.h)
+        InterpreterFactory.h
+        Helper.h)
 
 
 add_executable(example main.cpp ${SOURCE_FILES})
@@ -55,3 +56,16 @@ set_target_properties(free_test_mic PROPERTIES COMPILE_FLAGS "-mmic" )
 set_target_properties(free_test_mic PROPERTIES LINK_FLAGS "-mmic" )
 target_compile_definitions(free_test_mic PRIVATE NO_PRINT)
 add_custom_command(TARGET free_test_mic POST_BUILD COMMAND scp free_test_mic mic1:)
+
+
+add_executable(busy_test_sequential busy_test_sequential.cpp ${SOURCE_FILES})
+
+add_executable(busy_test_sequential_no_print busy_test_sequential.cpp ${SOURCE_FILES})
+target_compile_definitions(busy_test_sequential_no_print PRIVATE NO_PRINT)
+
+add_executable(busy_test_sequential_mic busy_test_sequential.cpp ${SOURCE_FILES})
+set_target_properties(busy_test_sequential_mic PROPERTIES COMPILE_FLAGS "-mmic" )
+set_target_properties(busy_test_sequential_mic PROPERTIES LINK_FLAGS "-mmic" )
+target_compile_definitions(busy_test_sequential_mic PRIVATE NO_PRINT)
+add_custom_command(TARGET busy_test_sequential_mic POST_BUILD COMMAND scp busy_test_sequential_mic mic1:)
+

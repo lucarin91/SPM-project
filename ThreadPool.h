@@ -41,7 +41,12 @@ public:
 
     ThreadPool();
 
-    ~ThreadPool();
+    ~ThreadPool(){
+        if (!_to_stop)
+            stop();
+    };
+
+    void stop();
 
     const int &n_thread;
 
