@@ -16,6 +16,11 @@ Interpreter::Interpreter(ThreadPool &tp, shared_ptr<Graph> g, initializer_list<s
 
     for (auto &ist : _g->ist) {
         _count_ist.push_back(ist.in.size());
+        for (auto &t : ist.in){
+            if (_token.find(t) != _token.end()){
+                --_count_ist[_count_ist.size()-1];
+            }
+        }
     }
 }
 
@@ -26,10 +31,13 @@ void Interpreter::eval() {
     SyncCout::println(msg);
 #endif
 
-    for (auto &t : _token) {
-        _fire_ist(t.second->id);
+    _count_ist_mutex->lock();
+    for (int i=0; i<_count_ist.size(); i++) {
+        if (_count_ist[i]==0) {
+            _fire_ist(i);
+        }
     }
-
+    _count_ist_mutex->unlock();
 
     /* for (const Statement &stm : _g->ist) {
          if (_fired_ist.find(stm.id) == _fired_ist.end()) {
@@ -86,7 +94,7 @@ void Interpreter::_exec_function(Statement ist, t_in in) {
         _token[id] = move(t); //SYNC
     });
 
-    _fire_ist(id);
+    _find_fireble_ist(id);
 /*
     auto got = _g->token_to_ist.find(id);
     if (got == _g->token_to_ist.end()) {
@@ -122,32 +130,44 @@ void Interpreter::_check_ready_ist_mutex(function<void()> f) {
     _count_ist_mutex->unlock();
 }
 
-void Interpreter::_fire_ist(int t_id) {
+void Interpreter::_find_fireble_ist(int t_id) {
+
     auto got = _g->token_to_ist.find(t_id);
     if (got != _g->token_to_ist.end()) {
         for (auto ist_id : got->second) {
+
             _count_ist_mutex->lock();
             if (--_count_ist[ist_id] == 0) {
                 _count_ist[ist_id] = -1;
                 _count_ist_mutex->unlock();
 
-                t_in in;
-                const t_type_in &in_list = _g->ist[ist_id].in;
-                for (const int &id : in_list) {
-                    _check_token_mutex([this, &in, &id]() {
-                        in.push_back(_token[id]);
-                    });
-                }
+                _fire_ist(ist_id);
 
-                const Statement &ist = _g->ist[ist_id];
-                auto p = shared_from_this();
-                _tp.addTask([p, ist, in]() {
-                    p->_exec_function(ist, in);
-                });
             } else {
                 _count_ist_mutex->unlock();
             }
         }
-    } else
-        _drainer(_token[t_id]);
+    } else {
+        _token_mutex->lock();
+        auto t = _token[t_id];
+        _token_mutex->unlock();
+        _drainer(t);
+    }
+
+}
+
+void Interpreter::_fire_ist(int ist_id) {
+    t_in in;
+    const t_type_in &in_list = _g->ist[ist_id].in;
+    for (const int &id : in_list) {
+        _check_token_mutex([this, &in, &id]() {
+            in.push_back(_token[id]);
+        });
+    }
+
+    const Statement &ist = _g->ist[ist_id];
+    auto p = shared_from_this();
+    _tp.addTask([p, ist, in]() {
+        p->_exec_function(ist, in);
+    });
 }

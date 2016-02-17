@@ -29,7 +29,7 @@ class ThreadPool {
     mutex _task_mutex;
 
     atomic<bool> _to_stop;
-    atomic<int> _n_task;
+    //atomic<int> _n_task;
     vector<thread> _thread;
 
     void _body_thread();

@@ -10,24 +10,28 @@ void ThreadPool::_start() {
 }
 
 void ThreadPool::_body_thread() {
-    while (!_to_stop || _n_task > 0) {
-        _task_mutex.lock();
+    _task_mutex.lock();
+    while (!_to_stop || _task.size() > 0) {
+        //_task_mutex.lock();
         if (_task.size() > 0) {
             auto t = _task.front();
             _task.erase(_task.begin());
             _task_mutex.unlock();
             t();
-            --_n_task;
+            //--_n_task;
         } else {
             _task_mutex.unlock();
         }
         //cout << endl << "...task... " << _to_stop << " " << _n_task << endl << endl;
+        _task_mutex.lock();
     }
+    _task_mutex.unlock();
+
     //cout << endl << "...end--_body_thread.." << endl << endl;
 }
 
 void ThreadPool::addTask(function<void()> &&f) {
-    ++_n_task;
+    //++_n_task;
     _task_mutex.lock();
     _task.push_back(f);
     _task_mutex.unlock();
@@ -51,7 +55,7 @@ int ThreadPool::_get_num_thread() {
     return n;
 }
 
-ThreadPool::ThreadPool(int n) : _to_stop(false), _n_task(0), n_thread(_n_thread) {
+ThreadPool::ThreadPool(int n) : _to_stop(false), /*_n_task(0),*/ n_thread(_n_thread) {
     _n_thread = n >= 1 ? n : _get_num_thread();
     _start();
 }

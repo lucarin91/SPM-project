@@ -54,6 +54,7 @@ private:
 
     void _check_token_mutex(function<void()> f);
     void _check_ready_ist_mutex(function<void()> f);
+    void _find_fireble_ist(int);
     void _fire_ist(int);
 
     void _exec_function(Statement ist, t_in);

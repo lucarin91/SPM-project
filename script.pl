@@ -16,6 +16,7 @@ foreach my $p (1,5,10,15,20,25,30,35,40,45,50,55,60,65,70) {
   foreach my $i (1..$N) {
     # \time --format="%E" ./main.out --step 1000 --height 1000 --width 1000 --thread 16
     my $r=`\\ssh mic1 "TIMEFORMAT=%R && time ./$filename $p $size" 2>&1`;
+    sleep 1;
     $sum=$sum + $r;
     $r =~ s/^\s+|\s+$//g;
     push @timings, $r;
