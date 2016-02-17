@@ -52,8 +52,8 @@ int main(int argc, char* argv[]) {
     };
 
     for (int i = 0; i < (argc>2?stoi(argv[2]):100); i++) {
-        inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, 1)),
-                                 shared_ptr<Token>(new Token_value<int>(2, 1))}, drain);
+        inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, i)),
+                                 shared_ptr<Token>(new Token_value<int>(2, i))}, drain);
     }
     return 0;
 }
