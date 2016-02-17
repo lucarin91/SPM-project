@@ -40,8 +40,8 @@ int main(int argc, char* argv[]) {
             }, {1, 2}, 3),
 
             Statement([](t_in in_ptr) -> t_out {
-                auto &in1 = static_cast<Token_value<int> &> (*in_ptr[0]);
-                auto &in2 = static_cast<Token_value<int> &> (*in_ptr[1]);
+                auto &in1 = static_cast<Token_value<double> &> (*in_ptr[0]);
+                auto &in2 = static_cast<Token_value<double> &> (*in_ptr[1]);
                 shared_ptr<Token_value<double>> res(new Token_value<double>(in1.value * in2.value));
                 for (int i=0;i<10000;i++){
                     res->set(sin(res->value));
