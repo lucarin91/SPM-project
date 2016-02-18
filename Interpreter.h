@@ -14,20 +14,16 @@
 #include "ThreadPool.h"
 
 using namespace std;
-typedef function<void(Token&)> Drainer;
+typedef function<void(shared_ptr<Token>)> Drainer;
 
 class Interpreter : public enable_shared_from_this<Interpreter> {
-    Interpreter(Interpreter const &) = delete;
-
-    Interpreter(Interpreter &) = delete;
+    Interpreter(Interpreter const&) = delete;
     Interpreter(Interpreter &&) = delete;
 
     Interpreter &operator=(Interpreter const &) = delete;
 
 public:
-    ~Interpreter() {
-
-    }
+    ~Interpreter() { }
 
     Interpreter(ThreadPool& _tp, shared_ptr<Graph> g, initializer_list<Token>&&, Drainer&& d);
 
@@ -49,16 +45,19 @@ private:
     shared_ptr<Graph> _g;
     Drainer _drainer;
 
-    unordered_map<int, Token> _token;
+    unordered_map<int, shared_ptr<Token>> _token;
     unique_ptr<mutex> _token_mutex;
 
-    //unordered_map<int, vector<int>> _token_to_stm;
-    unordered_set<int> _fired_stm;
+    vector<int> _count_ist;
+    unique_ptr<mutex> _count_ist_mutex;
+    //unordered_set<int> _fired_ist;
 
     void _check_token_mutex(function<void()> f);
-    //shared_ptr<Token> _get_token_type(int);
+    void _check_ready_ist_mutex(function<void()> f);
+    void _find_fireble_ist(int);
+    void _fire_ist(int);
 
-    void _exec_function(fun, t_in);
+    void _exec_function(Statement ist, t_in);
 };
 
 

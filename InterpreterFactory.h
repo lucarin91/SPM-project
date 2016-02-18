@@ -16,7 +16,7 @@
 #include "ThreadPool.h"
 
 using namespace std;
-typedef function<void(Token&)> Drainer;
+typedef function<void(shared_ptr<Token>)> Drainer;
 
 class InterpreterFactory {
     InterpreterFactory(InterpreterFactory const &) = delete;
@@ -38,6 +38,10 @@ public:
     void start(string name, initializer_list<Token>&& , Drainer);
 
     const int &n_thread;
+
+    void wait(){
+        _tp.stop();
+    }
 
 };
 

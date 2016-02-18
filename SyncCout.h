@@ -6,23 +6,20 @@
 #define SPM_PROJECT_SYNCCOUT_H
 #include <iostream>
 #include <sstream>
+#include <mutex>
 
 using namespace std;
 
 class SyncCout {
     static mutex _m;
     static bool _sync;
+    static bool _print;
 
 public:
-    static void println(const stringstream& in){
-        if (_sync) _m.lock();
-        cout << in.str() << endl << flush;
-        if (_sync) _m.unlock();
-    }
+    static void println(const stringstream& in);
 
-    static void setSync(bool v){
-        _sync = v;
-    }
+    static void setSync(bool v){_sync = v;}
+    static void setPrint(bool v){_print = v;}
 };
 
 

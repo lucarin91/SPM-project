@@ -8,11 +8,12 @@
 #include <memory>
 
 using namespace std;
+
 class Token {
 
 //    Token(const Token &) = delete;
 
-   // Token &operator=(Token const &) = delete;
+    // Token &operator=(Token const &) = delete;
 
 
     //static int _ID;
@@ -26,23 +27,31 @@ public:
     const int &id;
     const bool &ready;
 
-    Token() : ready(_ready), id(_id), _id(-1){};
+    //Token() : ready(_ready), id(_id), _id(-1) { };
+
+    Token(bool r = false) : Token(-1, r) { }
 
     Token(int name, bool r = false) : ready(_ready), id(_id),
                                       _ready(r), _id(name) { }
 
     Token(Token &t) : ready(_ready), id(_id),
-                            _ready(t._ready), _id(t._id) { }
+                      _ready(t._ready), _id(t._id) { }
 
     Token(const Token &t) : ready(_ready), id(_id),
                             _ready(t._ready), _id(t._id) { }
 
     Token(Token &&t) : ready(_ready), id(_id),
-                      _ready(move(t._ready)), _id(move(t._id)) { }
+                       _ready(move(t._ready)), _id(move(t._id)) { }
 
-    Token &operator=(Token const &t){
-        Token res(t);
-        return res;
+    Token &operator=(Token const &t) {
+        _ready = t._ready;
+        _id = t._id;
+        return *this;
+    }
+
+    void set_id(int id) {
+        _id = id;
+
     }
 
 };
@@ -50,7 +59,7 @@ public:
 template<class T>
 class Token_value : public Token {
 
-   // Token_value(const Token_value &) = delete;
+    // Token_value(const Token_value &) = delete;
 
     Token_value &operator=(Token_value const &) = delete;
 
@@ -59,11 +68,13 @@ class Token_value : public Token {
 public:
     // ~Token_value(){};
 
-    Token_value(int name) : Token(name), value(_value) { }
+    Token_value() : Token(), value(_value) { }
 
     Token_value(int name, T v) : Token(name, true), value(_value), _value(v) { }
 
-    Token_value(Token_value &t) : Token(t.id),
+    Token_value(T v) : Token(true), value(_value), _value(v) { }
+
+    Token_value(const Token_value &t) : Token(t.id),
                                         value(_value),
                                         _value(t.value) {
         _ready = t.ready;
@@ -71,8 +82,8 @@ public:
     }
 
     Token_value(Token_value &&t) : Token(move(t.id)),
-                                  value(_value),
-                                  _value(move(t.value)) {
+                                   value(_value),
+                                   _value(move(t.value)) {
         _ready = move(t.ready);
         _id = move(t.id);
     }

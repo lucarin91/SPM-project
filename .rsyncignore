@@ -1,8 +1,12 @@
+README.md
 .DS_Store
+upload.sh
+.git
+.gitignore
 .idea
 *.o
 *.out
 build
 tmp
 bin
-
+Test

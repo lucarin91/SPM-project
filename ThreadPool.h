@@ -5,10 +5,12 @@
 #ifndef SPM_PROJECT_THREADPOOL_H
 #define SPM_PROJECT_THREADPOOL_H
 
+#include <iostream>
 #include <memory>
-#include <future>
 #include <vector>
 #include <cmath>
+#include <thread>
+#include <atomic>
 
 using namespace std;
 
@@ -27,7 +29,7 @@ class ThreadPool {
     mutex _task_mutex;
 
     atomic<bool> _to_stop;
-    atomic<int> _n_task;
+    //atomic<int> _n_task;
     vector<thread> _thread;
 
     void _body_thread();
@@ -39,7 +41,12 @@ public:
 
     ThreadPool();
 
-    ~ThreadPool();
+    ~ThreadPool(){
+        if (!_to_stop)
+            stop();
+    };
+
+    void stop();
 
     const int &n_thread;
 
