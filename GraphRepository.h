@@ -29,9 +29,7 @@ public:
 
     const unordered_map<string, shared_ptr<Graph>> &graph;
 
-    ~GraphRepository(){
-
-    }
+    ~GraphRepository() { }
 };
 
 

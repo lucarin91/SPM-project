@@ -9,32 +9,33 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
+    int n = argc>3?stoi(argv[3]):10000;
     shared_ptr<GraphRepository> gr (new GraphRepository());
     gr->add("test", {
 
-            Statement([](t_in in_ptr) -> t_out {
+            Statement([&n](t_in in_ptr) -> t_out {
                 auto &in = static_cast<Token_value<double> &> (*in_ptr[0]);
                 shared_ptr<Token_value<double>> res(new Token_value<double>(in.value * 2));
-                for (int i=0;i<10000;i++){
+                for (int i=0;i<n;i++){
                     res->set(sin(res->value));
                 }
                 return res;
             }, {3}, 4),
 
-            Statement([](t_in in_ptr) -> t_out {
+            Statement([&n](t_in in_ptr) -> t_out {
                 auto &in = static_cast<Token_value<double> &> (*in_ptr[0]);
                 shared_ptr<Token_value<double>> res(new Token_value<double>(in.value * 3));
-                for (int i=0;i<10000;i++){
+                for (int i=0;i<n;i++){
                     res->set(sin(res->value));
                 }
                 return res;
             }, {3}, 5),
 
-            Statement([](t_in in_ptr) -> t_out {
+            Statement([&n](t_in in_ptr) -> t_out {
                 auto &in1 = static_cast<Token_value<int> &> (*in_ptr[0]);
                 auto &in2 = static_cast<Token_value<int> &> (*in_ptr[1]);
                 shared_ptr<Token_value<double>> res(new Token_value<double>(in1.value + in2.value));
-                for (int i=0;i<10000;i++){
+                for (int i=0;i<n;i++){
                     res->set(sin(res->value));
                 }
                 return res;
@@ -54,12 +55,12 @@ int main(int argc, char* argv[]) {
     InterpreterFactory inFactory(gr,(argc>1?stoi(argv[1]):0));
     //cout << "N thread " << inFactory.n_thread << endl;
 
-    double sumTS = 0;
-    double prevTS = Helper::gettime();
-    function<void(shared_ptr<Token>)> drain = [&sumTS,&prevTS](shared_ptr <Token> t) {
-        auto now = Helper::gettime();
+   /* double sumTS = 0;
+    double prevTS = Helper::gettime();*/
+    function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
+        /*auto now = Helper::gettime();
         sumTS += now - prevTS;
-        prevTS = now;
+        prevTS = now;*/
 
         auto &tv = static_cast<Token_value<double> &> (*t);
 #ifndef NO_PRINT
@@ -69,8 +70,8 @@ int main(int argc, char* argv[]) {
 #endif
     };
 
-    double sumTA = 0;
-    double prevTA = Helper::gettime();
+  /*  double sumTA = 0;
+    double prevTA = Helper::gettime();*/
     int N = (argc>2?stoi(argv[2]):100);
     for (int i = 0; i < N; i++) {
 
@@ -78,13 +79,13 @@ int main(int argc, char* argv[]) {
         inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, i)),
                                  shared_ptr<Token>(new Token_value<int>(2, i))}, drain);
 
-        auto now = Helper::gettime();
+        /*auto now = Helper::gettime();
         sumTA += now - prevTA;
-        prevTA = now;
+        prevTA = now;*/
     }
 
     inFactory.wait();
 
-    Helper::printtime(sumTA/N,sumTS/N);
+    //Helper::printtime(sumTA/N,sumTS/N);
     return 0;
 }
