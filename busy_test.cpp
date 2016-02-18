@@ -55,11 +55,11 @@ int main(int argc, char* argv[]) {
     //cout << "N thread " << inFactory.n_thread << endl;
 
     double sumTS = 0;
-    double prev = Helper::gettime();
-    function<void(shared_ptr<Token>)> drain = [&sumTS,&prev](shared_ptr <Token> t) {
+    double prevTS = Helper::gettime();
+    function<void(shared_ptr<Token>)> drain = [&sumTS,&prevTS](shared_ptr <Token> t) {
         auto now = Helper::gettime();
-        sumTS += now - prev;
-        prev = now;
+        sumTS += now - prevTS;
+        prevTS = now;
 
         auto &tv = static_cast<Token_value<double> &> (*t);
 #ifndef NO_PRINT
@@ -70,14 +70,17 @@ int main(int argc, char* argv[]) {
     };
 
     double sumTA = 0;
+    double prevTA = Helper::gettime();
     int N = (argc>2?stoi(argv[2]):100);
     for (int i = 0; i < N; i++) {
-        auto start = Helper::gettime();
-        sumTA += Helper::gettime() - start;
+
 
         inFactory.start("test", {shared_ptr<Token>(new Token_value<int>(1, i)),
                                  shared_ptr<Token>(new Token_value<int>(2, i))}, drain);
 
+        auto now = Helper::gettime();
+        sumTA += now - prevTA;
+        prevTA = now;
     }
 
     inFactory.wait();
