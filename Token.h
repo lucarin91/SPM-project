@@ -5,6 +5,9 @@
 #ifndef SPM_PROJECT_TOKEN_H
 #define SPM_PROJECT_TOKEN_H
 
+#include <memory>
+
+using namespace std;
 class Token {
 
     Token(Token &) = delete;
@@ -32,6 +35,10 @@ public:
 
     Token(const Token &t) : ready(_ready), id(_id),
                             _ready(t._ready), _id(t._id) { }
+
+    virtual Token* clone() const {
+        return new Token(_id,_ready);
+    }
 
     void set_id(int id){
         _id = id;
@@ -62,6 +69,10 @@ public:
                                         _value(t.value) {
         _ready = t.ready;
         _id = t.id;
+    }
+
+    virtual Token_value<T>* clone() const {
+        return new Token_value<T>(_id,_value);
     }
 
     const T &value;

@@ -4,14 +4,22 @@
 
 #include "Interpreter.h"
 
-Interpreter::Interpreter(ThreadPool &tp, shared_ptr<Graph> g, initializer_list<shared_ptr<Token>> &&list, Drainer &&d) :
+Interpreter::Interpreter(ThreadPool &tp, shared_ptr<Graph> g, initializer_list<Token> &&list, Drainer &&d) :
         _tp(tp),
         _g(g),
         _drainer(d),
         _token_mutex(new mutex()),
         _count_ist_mutex(new mutex()) {
-    for (auto &t : list) {
-        _token[t->id] = t;
+    for (auto t : list) {
+        auto &t1 = static_cast<Token_value<int>&>(t);
+        cout << "id " <<t1.id<<endl;
+        cout << "value "<< t1.value<<endl;
+
+        _token[t.id] = t.clone();
+
+        Token_value<int> *t2 = static_cast<Token_value<int>*>(_token[t.id]);
+        cout << "id " <<t2->id<<endl;
+        cout << "value "<< t2->value<<endl;
     }
 
     for (auto &ist : _g->ist) {
@@ -91,7 +99,7 @@ void Interpreter::_exec_function(Statement ist, t_in in) {
     t->set_id(ist.out);
 
     _check_token_mutex([this, &id, &t]() {
-        _token[id] = move(t); //SYNC
+        _token[id] = t; //SYNC
     });
 
     _find_fireble_ist(id);

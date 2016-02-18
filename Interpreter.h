@@ -14,7 +14,7 @@
 #include "ThreadPool.h"
 
 using namespace std;
-typedef function<void(shared_ptr<Token>)> Drainer;
+typedef function<void(Token*)> Drainer;
 
 class Interpreter : public enable_shared_from_this<Interpreter> {
     Interpreter(Interpreter const&) = delete;
@@ -25,7 +25,7 @@ class Interpreter : public enable_shared_from_this<Interpreter> {
 public:
     ~Interpreter() { }
 
-    Interpreter(ThreadPool& _tp, shared_ptr<Graph> g, initializer_list<shared_ptr<Token>>&&, Drainer&& d);
+    Interpreter(ThreadPool& _tp, shared_ptr<Graph> g, initializer_list<Token>&&, Drainer&& d);
 
 //    Interpreter(Interpreter &&in) : _g(move(in._g)),
 //                                    _tp(move(in._tp)),
@@ -45,7 +45,7 @@ private:
     shared_ptr<Graph> _g;
     Drainer _drainer;
 
-    unordered_map<int, shared_ptr<Token>> _token;
+    unordered_map<int, Token*> _token;
     unique_ptr<mutex> _token_mutex;
 
     vector<int> _count_ist;
