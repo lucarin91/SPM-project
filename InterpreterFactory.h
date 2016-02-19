@@ -35,12 +35,12 @@ public:
 
     InterpreterFactory(shared_ptr<GraphRepository> g): InterpreterFactory(g,0) { }
 
-    void start(string name, initializer_list<shared_ptr<Token>>&& , Drainer);
+    void start(string, initializer_list<shared_ptr<Token>>&& , Drainer);
 
     const int &n_thread;
 
     void wait(){
-        _tp.stop();
+        _tp.wait();
     }
 
 };

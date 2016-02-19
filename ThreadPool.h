@@ -43,10 +43,10 @@ public:
 
     ~ThreadPool(){
         if (!_to_stop)
-            stop();
+            wait();
     };
 
-    void stop();
+    void wait();
 
     const int &n_thread;
 

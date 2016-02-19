@@ -11,56 +11,50 @@ class Token {
 
     Token &operator=(Token const &) = delete;
 
-
     //static int _ID;
 
 protected:
 
-    bool _ready;
     int _type;
 
 public:
     const int &type;
-    const bool &ready;
 
     //~Token(){};
 
-    Token(bool r = false) : Token(-1, r) { }
+    Token() : Token(-1) { }
 
-    Token(int name, bool r = false) : ready(_ready), type(_type),
-                                      _ready(r), _type(name) { }
+    Token(int t) : type(_type), _type(t) { }
 
-    Token(const Token &t) : ready(_ready), type(_type),
-                            _ready(t._ready), _type(t._type) { }
+    Token(const Token &t) : type(_type), _type(t._type) { }
 
-    void set_id(int id){
-        _type = id;
+    void set_type(int t) {
+        _type = t;
     }
 
 };
 
 template<class T>
-class Token_value : public Token {
+class T_value : public Token {
 
-    Token_value(Token_value &) = delete;
+    T_value(T_value &) = delete;
 
-    Token_value &operator=(Token_value const &) = delete;
+    T_value &operator=(T_value const &) = delete;
 
     T _value;
 
 public:
-    // ~Token_value(){};
+    // ~T_value(){};
 
-    Token_value() : Token(), value(_value) { }
+    T_value() : Token(), value(_value) { }
 
-    Token_value(int name, T v) : Token(name, true), value(_value), _value(v) { }
+    T_value(int t, T v) : Token(t), value(_value), _value(v) { }
 
-    Token_value(T v) : Token(true), value(_value), _value(v) { }
+    T_value(T v) : Token(true), value(_value), _value(v) { }
 
-    Token_value(const Token_value &t) : Token(t.type),
-                                        value(_value),
-                                        _value(t.value) {
-        _ready = t.ready;
+    T_value(const T_value &t) : Token(t.type),
+                                value(_value),
+                                _value(t.value) {
         _type = t.type;
     }
 
@@ -68,7 +62,6 @@ public:
 
     void set(T v) {
         _value = v;
-        _ready = true;
     }
 };
 

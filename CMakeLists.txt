@@ -69,3 +69,14 @@ set_target_properties(busy_test_sequential_mic PROPERTIES LINK_FLAGS "-mmic" )
 target_compile_definitions(busy_test_sequential_mic PRIVATE NO_PRINT)
 add_custom_command(TARGET busy_test_sequential_mic POST_BUILD COMMAND scp busy_test_sequential_mic mic1:)
 
+
+add_executable(free_test_sequential free_test_sequential.cpp ${SOURCE_FILES})
+
+add_executable(free_test_sequential_no_print free_test_sequential.cpp ${SOURCE_FILES})
+target_compile_definitions(free_test_sequential_no_print PRIVATE NO_PRINT)
+
+add_executable(free_test_sequential_mic free_test_sequential.cpp ${SOURCE_FILES})
+set_target_properties(free_test_sequential_mic PROPERTIES COMPILE_FLAGS "-mmic" )
+set_target_properties(free_test_sequential_mic PROPERTIES LINK_FLAGS "-mmic" )
+target_compile_definitions(free_test_sequential_mic PRIVATE NO_PRINT)
+add_custom_command(TARGET free_test_sequential_mic POST_BUILD COMMAND scp free_test_sequential_mic mic1:)

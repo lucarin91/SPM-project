@@ -88,7 +88,7 @@ void Interpreter::_exec_function(Statement ist, t_in in) {
     SyncCout::println(msg);
 #endif
     int id = ist.out;
-    t->set_id(ist.out);
+    t->set_type(ist.out);
 
     _check_token_mutex([this, &id, &t]() {
         _token[id] = move(t); //SYNC

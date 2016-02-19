@@ -37,7 +37,7 @@ void ThreadPool::addTask(function<void()> &&f) {
     _task_mutex.unlock();
 }
 
-void ThreadPool::stop() {
+void ThreadPool::wait() {
     //cout << endl << "destructur ThreadPool" << endl << endl;
     _to_stop = true;
     for (auto &t : _thread) {
