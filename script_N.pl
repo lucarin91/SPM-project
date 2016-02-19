@@ -29,6 +29,6 @@ foreach my $n (1000, 4500, 10000, 45000, 100000) {
         push @json, "[$p, $avg, ".join(", ", @sorted )."]";
     }
     print "[\n".join( ",\n", @json )."\n]";
-     print ",\n" if ($n!=100000);
+    print ",\n" if ($n!=100000);
 }
 print "\n]";
