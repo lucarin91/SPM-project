@@ -26,8 +26,9 @@ foreach my $n (1000, 4500, 10000, 45000, 100000) {
         print STDERR "\n";
         my @sorted = sort {$a <=> $b} @timings;
         my $avg = $sum / $N;
-        push @json, "[$p, [".join( ", ", $avg )."], ".join( ", ", @sorted )."]";
+        push @json, "[$p, $avg, ".join(", ", @sorted )."]";
     }
-    print "[\n".join( ",\n", @json )."\n],\n";
+    print "[\n".join( ",\n", @json )."\n]";
+     print ",\n" if ($n!=100000);
 }
-print "]";
+print "\n]";
