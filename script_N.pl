@@ -7,7 +7,7 @@ my $size = shift or die "Usage: $0 FILENAME NUMBER\n";
 my $N = shift || N;
 
 print "[\n";
-foreach my $n (1000, 5000, 10000, 50000, 100000) {
+foreach my $n (1000, 4500, 10000, 45000, 100000) {
     my @json = ();
     print STDERR "\n....$n....:\n";
     foreach my $p (1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60) {

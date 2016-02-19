@@ -8,7 +8,7 @@ my $N = shift || N;
 
 my $sum = 0;
 my @timings = ();
-foreach my $n (1000, 5000, 10000, 50000, 100000) {
+foreach my $n (1000, 4500, 10000, 45000, 100000) {
     print STDERR "\n....$n....:\n";
 
     foreach my $i (1 .. $N) {
