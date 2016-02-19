@@ -42,14 +42,15 @@ int main(int argc, char* argv[]) {
 
     InterpreterFactory inFactory(gr,(argc>1?stoi(argv[1]):0));
     //cout << "N thread " << inFactory.n_thread << endl;
-
-    function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
+    double res = 0;
+    Drainer drain = [&res](shared_ptr <Token> t) {
         auto &tv = static_cast<Token_value<double> &> (*t);
 #ifndef NO_PRINT
         stringstream msg;
         msg << "drainer: " << "token: " << tv.id << " value: " << tv.value;
         SyncCout::println(msg);
 #endif
+        res += tv.value;
     };
 
     int N = (argc>2?stoi(argv[2]):100);
@@ -60,5 +61,5 @@ int main(int argc, char* argv[]) {
     }
 
     inFactory.wait();
-    return 0;
+    return res;
 }

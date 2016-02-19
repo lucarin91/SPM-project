@@ -13,7 +13,7 @@ The project is constituted of three principal parts:
 - `ThreadPool`, the actual core of the parallel computation, whitch manage the task on a fixed number of threads
 
 ## Graph Repository
-The MDF graphs are organized inside the GraphRepository class inside an `unordered_map` by a name and added by the method `add(string name, shared_ptr<Graph> g)`. The graph class inside have a 
+The MDF graphs are organized inside the GraphRepository class inside an `unordered_map` by a name and added by the method `add(string name, shared_ptr<Graph> g)`. The graph class all the data structure to 
 
 ## Interpreter
 
