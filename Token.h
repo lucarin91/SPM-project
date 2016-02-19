@@ -17,24 +17,24 @@ class Token {
 protected:
 
     bool _ready;
-    int _id;
+    int _type;
 
 public:
-    const int &id;
+    const int &type;
     const bool &ready;
 
     //~Token(){};
 
     Token(bool r = false) : Token(-1, r) { }
 
-    Token(int name, bool r = false) : ready(_ready), id(_id),
-                                      _ready(r), _id(name) { }
+    Token(int name, bool r = false) : ready(_ready), type(_type),
+                                      _ready(r), _type(name) { }
 
-    Token(const Token &t) : ready(_ready), id(_id),
-                            _ready(t._ready), _id(t._id) { }
+    Token(const Token &t) : ready(_ready), type(_type),
+                            _ready(t._ready), _type(t._type) { }
 
     void set_id(int id){
-        _id = id;
+        _type = id;
     }
 
 };
@@ -57,11 +57,11 @@ public:
 
     Token_value(T v) : Token(true), value(_value), _value(v) { }
 
-    Token_value(const Token_value &t) : Token(t.id),
+    Token_value(const Token_value &t) : Token(t.type),
                                         value(_value),
                                         _value(t.value) {
         _ready = t.ready;
-        _id = t.id;
+        _type = t.type;
     }
 
     const T &value;

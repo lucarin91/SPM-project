@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
         auto &tv = static_cast<Token_value<int> &> (*t);
 #ifndef NO_PRINT
         stringstream msg;
-        msg << "drainer: " << "token: " << tv.id << " value: " << tv.value;
+        msg << "drainer: " << "token: " << tv.type << " value: " << tv.value;
         SyncCout::println(msg);
 #endif
     };

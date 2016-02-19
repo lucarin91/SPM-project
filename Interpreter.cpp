@@ -11,7 +11,7 @@ Interpreter::Interpreter(ThreadPool &tp, shared_ptr<Graph> g, initializer_list<s
         _token_mutex(new mutex()),
         _count_ist_mutex(new mutex()) {
     for (auto &t : list) {
-        _token[t->id] = t;
+        _token[t->type] = t;
     }
 
     for (auto &ist : _g->ist) {
