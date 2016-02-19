@@ -7,7 +7,7 @@ my $size = shift or die "Usage: $0 FILENAME NUMBER\n";
 my $N = shift || N;
 
 print "[\n";
-foreach my $n (1000, 5000, 10000, 50000, 100000) {
+foreach my $n (1000,4500,10000,45000,100000) {
     my @json = ();
     print STDERR "\n....$n....:\n";
     foreach my $p (1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60) {
@@ -26,8 +26,9 @@ foreach my $n (1000, 5000, 10000, 50000, 100000) {
         print STDERR "\n";
         my @sorted = sort {$a <=> $b} @timings;
         my $avg = $sum / $N;
-        push @json, "[$p, [".join( ", ", $avg )."], ".join( ", ", @sorted )."]";
+        push @json, "[$p, $avg, ".join(", ", @sorted )."]";
     }
-    print "[\n".join( ",\n", @json )."\n],\n";
+    print "[\n".join( ",\n", @json )."\n]";
+    if ($n!=100000) print ",\n";
 }
-print "]";
+print "\n]";
