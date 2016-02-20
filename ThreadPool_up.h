@@ -5,6 +5,16 @@
 #ifndef SPM_PROJECT_THREADPOOL_UP_H
 #define SPM_PROJECT_THREADPOOL_UP_H
 
+#include <functional>
+#include <thread>
+#include <vector>
+#include <atomic>
+#include <mutex>
+#include <limits.h>
+#include "ThreadPool.h"
+
+
+using namespace std;
 
 class ThreadPool_up  : public ThreadPool {
     ThreadPool_up(ThreadPool_up const &) = delete;
@@ -16,26 +26,17 @@ class ThreadPool_up  : public ThreadPool {
     ThreadPool_up &operator=(ThreadPool_up const &) = delete;
 
     vector < vector<function<void()> >> _task;
-    vector<mutex> _task_mutex;
-    vector<atomic<int>> _task_count;
+    vector<unique_ptr<mutex>> _task_mutex;
+    vector<unique_ptr<atomic<int>>> _task_count;
 
-protected:
-    virtual void _body_thread();
-    virtual void _start();
+    void _body_thread(int);
+
 public:
-    ThreadPool(int n);
+    ThreadPool_up(int);
 
-    ThreadPool();
+    ThreadPool_up();
 
-    ~ThreadPool(){
-        if (!_to_stop)
-            wait();
-    };
-
-    virtual void wait();
-
-    virtual const int &n_thread;
-
+    virtual void start();
     virtual void addTask(function<void()> &&);
 
 };

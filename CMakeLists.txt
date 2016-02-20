@@ -16,6 +16,8 @@ set(SOURCE_FILES
         SyncCout.h
         ThreadPool.cpp
         ThreadPool.h
+        ThreadPool_up.cpp
+        ThreadPool_up.h
         InterpreterFactory.cpp
         InterpreterFactory.h
         Helper.h)

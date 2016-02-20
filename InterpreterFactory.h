@@ -14,6 +14,7 @@
 #include "Interpreter.h"
 #include "SyncCout.h"
 #include "ThreadPool.h"
+#include "ThreadPool_up.h"
 
 using namespace std;
 typedef function<void(shared_ptr<Token>)> Drainer;
@@ -28,10 +29,13 @@ class InterpreterFactory {
     InterpreterFactory &operator=(InterpreterFactory const &) = delete;
 
     shared_ptr<GraphRepository> _gr;
-    ThreadPool _tp;
+    ThreadPool_up _tp;
 
 public:
-    InterpreterFactory(shared_ptr<GraphRepository> g, int n) : _gr(g), _tp(n), n_thread(_tp.n_thread){ }
+    InterpreterFactory(shared_ptr<GraphRepository> g, int n) : _gr(g), _tp(n), n_thread(_tp.n_thread){
+        _tp.start();
+
+    }
 
     InterpreterFactory(shared_ptr<GraphRepository> g): InterpreterFactory(g,0) { }
 
