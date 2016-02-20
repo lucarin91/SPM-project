@@ -52,7 +52,14 @@ int main(int argc, char* argv[]) {
             }, {4, 5}, 6)
     });
 
-    InterpreterFactory inFactory(gr,(argc>1?stoi(argv[1]):0));
+
+    InterpreterFactory inFactory(gr,
+                                 (argc>1?stoi(argv[1]):0)
+#ifdef MULTY_QUEUE
+                                 ,QueueType::MULTY
+#endif
+                                 );
+
     //cout << "N thread " << inFactory.n_thread << endl;
 
    /* double sumTS = 0;

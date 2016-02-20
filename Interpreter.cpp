@@ -4,7 +4,7 @@
 
 #include "Interpreter.h"
 
-Interpreter::Interpreter(ThreadPool &tp, shared_ptr<Graph> g, initializer_list<shared_ptr<Token>> &&list, Drainer &&d) :
+Interpreter::Interpreter(shared_ptr<ThreadPool> tp, shared_ptr<Graph> g, initializer_list<shared_ptr<Token>> &&list, Drainer &&d) :
         _tp(tp),
         _g(g),
         _drainer(d),
@@ -167,7 +167,7 @@ void Interpreter::_fire_ist(int ist_id) {
 
     const Statement &ist = _g->ist[ist_id];
     auto p = shared_from_this();
-    _tp.addTask([p, ist, in]() {
+    _tp->addTask([p, ist, in]() {
         p->_exec_function(ist, in);
     });
 }

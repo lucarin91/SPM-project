@@ -10,7 +10,7 @@ void InterpreterFactory::start(string name, initializer_list<shared_ptr<Token>>&
         auto g = got->second;
 
         shared_ptr<Interpreter> inter (new Interpreter(_tp, g, move(list), move(drainer)));
-        _tp.addTask([inter]() {
+        _tp->addTask([inter]() {
             inter->eval();
         });
     } else {
