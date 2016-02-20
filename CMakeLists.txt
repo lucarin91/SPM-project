@@ -25,8 +25,15 @@ set(SOURCE_FILES
 
 add_executable(example main.cpp ${SOURCE_FILES})
 
+add_executable(example_multy main.cpp ${SOURCE_FILES})
+target_compile_definitions(example_multy PRIVATE MULTY_QUEUE)
+
 add_executable(example_no_print main.cpp ${SOURCE_FILES})
 target_compile_definitions(example_no_print PRIVATE NO_PRINT)
+
+add_executable(example_multy_no_print main.cpp ${SOURCE_FILES})
+target_compile_definitions(example_multy_no_print PRIVATE NO_PRINT)
+target_compile_definitions(example_multy_no_print PRIVATE MULTY_QUEUE)
 
 add_executable(example_mic main.cpp ${SOURCE_FILES})
 set_target_properties(example_mic PROPERTIES COMPILE_FLAGS "-mmic" )
@@ -43,6 +50,10 @@ target_compile_definitions(busy_test_no_print PRIVATE NO_PRINT)
 
 add_executable(busy_test_multy busy_test.cpp ${SOURCE_FILES})
 target_compile_definitions(busy_test_multy PRIVATE MULTY_QUEUE)
+
+add_executable(busy_test_multy_no_print busy_test.cpp ${SOURCE_FILES})
+target_compile_definitions(busy_test_multy_no_print PRIVATE NO_PRINT)
+target_compile_definitions(busy_test_multy_no_print PRIVATE MULTY_QUEUE)
 
 add_executable(busy_test_mic busy_test.cpp ${SOURCE_FILES})
 set_target_properties(busy_test_mic PROPERTIES COMPILE_FLAGS "-mmic" )

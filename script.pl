@@ -10,7 +10,7 @@ my @json = ();
 
 if ($mic ne "mic1") {
   my $r = `\\scp $filename $mic:`;
-  print "upload file...$r";
+  print STDERR "upload file $r to $mic ..";
 }
 
 print "[\n";

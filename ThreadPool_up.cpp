@@ -40,6 +40,11 @@ void ThreadPool_up::addTask(function<void()> &&f) {
             index=i;
         }
     }
+#ifndef NO_PRINT
+    stringstream msg;
+    msg << "add new task to thread " << index;
+    SyncCout::println(msg);
+#endif
     ++*_task_count[index];
     _task_mutex[index]->lock();
     _task[index].push_back(f);

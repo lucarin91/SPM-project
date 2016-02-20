@@ -12,6 +12,8 @@
 #include <mutex>
 #include <limits.h>
 #include "ThreadPool.h"
+#include <sstream>
+#include "SyncCout.h"
 
 
 using namespace std;

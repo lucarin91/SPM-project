@@ -27,7 +27,7 @@ Interpreter::Interpreter(shared_ptr<ThreadPool> tp, shared_ptr<Graph> g, initial
 void Interpreter::eval() {
 #ifndef NO_PRINT
     stringstream msg;
-    msg << "graph evalueted by: " << this_thread::get_id();
+    msg << "start a new graph evaluetion by: " << this_thread::get_id();
     SyncCout::println(msg);
 #endif
 
@@ -38,44 +38,6 @@ void Interpreter::eval() {
         }
     }
     _count_ist_mutex->unlock();
-
-    /* for (const Statement &stm : _g->ist) {
-         if (_fired_ist.find(stm.id) == _fired_ist.end()) {
-             bool ready = true;
-             t_in in;
-             const t_type_in &in_list = stm.in;
-             for (const int &id : in_list) {
-
-                 _check_token_mutex([this, &ready, &in, &id]() {
-                     auto got = _token.find(id);
-                     if (got == _token.end()) { //SYNC
-                         ready = false;
-                         //break;
-                     }*//*else{
-                        in.push_back(got->second);
-                    }*//*
-                });
-                if (!ready) break;
-
-            }
-
-            if (ready) {
-                _fired_ist.insert(stm.id);
-                for (const int &id : in_list) {
-                    _check_token_mutex([this, &in, &id, &stm]() {
-                        in.push_back(_token[id]);
-                    });
-                }
-
-                const fun &f = stm.f;
-                auto p = shared_from_this();
-                _tp.addTask([p, f, in]() {
-                    p->_exec_function(f, in);
-                });
-            }
-        }
-    }*/
-
 }
 
 void Interpreter::_exec_function(Statement ist, t_in in) {
@@ -84,7 +46,7 @@ void Interpreter::_exec_function(Statement ist, t_in in) {
 
 #ifndef NO_PRINT
     stringstream msg;
-    msg << "function executed by: " << this_thread::get_id();
+    msg << "new instruction evalueted by: " << this_thread::get_id();
     SyncCout::println(msg);
 #endif
     int id = ist.out;
@@ -95,27 +57,6 @@ void Interpreter::_exec_function(Statement ist, t_in in) {
     });
 
     _find_fireble_ist(id);
-/*
-    auto got = _g->token_to_ist.find(id);
-    if (got == _g->token_to_ist.end()) {
-        _drainer(t);
-    } else {
-
-        for (auto& ist : got->second){
-
-        }
-
-
-        _check_token_mutex([this, &id, &t]() {
-            _token[id] = move(t); //SYNC
-        });
-
-        auto p = shared_from_this();
-        _tp.addTask([p]() {
-            p->eval();
-        });
-
-    }*/
 }
 
 void Interpreter::_check_token_mutex(function<void()> f) {

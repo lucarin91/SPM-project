@@ -1,6 +1,6 @@
 % SPM Project: Micro Macro Data Flow
 % Luca Rinaldi
-% 12 January 2016
+% 22 February 2016
 
 # Introduction
 The project is a micro-MDF library to execute MDF graph with a defined number of threads.

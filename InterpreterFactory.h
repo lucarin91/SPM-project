@@ -36,13 +36,7 @@ class InterpreterFactory {
     shared_ptr<ThreadPool> _tp;
 
 public:
-    InterpreterFactory(shared_ptr<GraphRepository> g, int n, QueueType t = QueueType::SINGLE) : _gr(g) {
-        if (t == QueueType::SINGLE)
-            _tp = make_shared<ThreadPool>(n);
-        else
-            _tp = make_shared<ThreadPool_up>(n);
-        _tp->start();
-    }
+    InterpreterFactory(shared_ptr<GraphRepository> g, int n, QueueType t = QueueType::SINGLE);
 
     InterpreterFactory(shared_ptr<GraphRepository> g) : InterpreterFactory(g, 0) { }
 

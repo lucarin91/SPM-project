@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
             Statement([&n](t_in in_ptr) -> t_out {
                 auto &in = static_cast<T_value<double> &> (*in_ptr[0]);
                 shared_ptr<T_value<double>> res(new T_value<double>(in.value * 2));
-                for (int i=0;i<n;i++){
+                for (int i=0;i<n/10;i++){
                     res->set(sin(res->value));
                 }
                 return res;
@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
             Statement([&n](t_in in_ptr) -> t_out {
                 auto &in = static_cast<T_value<double> &> (*in_ptr[0]);
                 shared_ptr<T_value<double>> res(new T_value<double>(in.value * 3));
-                for (int i=0;i<n;i++){
+                for (int i=0;i<n*10;i++){
                     res->set(sin(res->value));
                 }
                 return res;
@@ -60,15 +60,8 @@ int main(int argc, char* argv[]) {
 #endif
                                  );
 
-    //cout << "N thread " << inFactory.n_thread << endl;
 
-   /* double sumTS = 0;
-    double prevTS = Helper::gettime();*/
     function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
-        /*auto now = Helper::gettime();
-        sumTS += now - prevTS;
-        prevTS = now;*/
-
         auto &tv = static_cast<T_value<double> &> (*t);
 #ifndef NO_PRINT
         stringstream msg;
@@ -77,22 +70,13 @@ int main(int argc, char* argv[]) {
 #endif
     };
 
-  /*  double sumTA = 0;
-    double prevTA = Helper::gettime();*/
+
     int N = (argc>2?stoi(argv[2]):100);
     for (int i = 0; i < N; i++) {
-
-
         inFactory.start("test", {shared_ptr<Token>(new T_value<int>(1, i)),
                                  shared_ptr<Token>(new T_value<int>(2, i))}, drain);
-
-        /*auto now = Helper::gettime();
-        sumTA += now - prevTA;
-        prevTA = now;*/
     }
 
     inFactory.wait();
-
-    //Helper::printtime(sumTA/N,sumTS/N);
     return 0;
 }
