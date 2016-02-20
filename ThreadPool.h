@@ -11,6 +11,8 @@
 #include <cmath>
 #include <thread>
 #include <atomic>
+#include <mutex>
+#include <unistd.h>
 
 using namespace std;
 
@@ -23,18 +25,17 @@ class ThreadPool {
 
     ThreadPool &operator=(ThreadPool const &) = delete;
 
-    int _n_thread;
-
     vector<function<void()>> _task;
     mutex _task_mutex;
 
-    atomic<bool> _to_stop;
-    //atomic<int> _n_task;
-    vector<thread> _thread;
+protected:
 
-    void _body_thread();
+    virtual void _body_thread();
+    virtual void _start();
+    vector<thread> _thread;
+    int _n_thread;
+    atomic<bool> _to_stop;
     int _get_num_thread();
-    void _start();
 
 public:
     ThreadPool(int n);
@@ -46,11 +47,11 @@ public:
             wait();
     };
 
-    void wait();
+    virtual void wait();
 
     const int &n_thread;
 
-    void addTask(function<void()> &&);
+    virtual void addTask(function<void()> &&);
     
 };
 
