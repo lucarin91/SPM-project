@@ -4,7 +4,7 @@
 
 #include "ThreadPool.h"
 
-void ThreadPool::_start() {
+void ThreadPool::start() {
     for (int i = 0; i < _n_thread; i++)
         _thread.push_back(thread(&ThreadPool::_body_thread, this));
 }
@@ -57,7 +57,7 @@ int ThreadPool::_get_num_thread() {
 
 ThreadPool::ThreadPool(int n) : _to_stop(false), /*_n_task(0),*/ n_thread(_n_thread) {
     _n_thread = n >= 1 ? n : _get_num_thread();
-    _start();
+    //start();
 }
 
 ThreadPool::ThreadPool() : ThreadPool(0) { }

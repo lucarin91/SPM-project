@@ -28,8 +28,12 @@ int main(int argc, char* argv[]) {
             }, {1, 2}, 3)
     });
 
-    InterpreterFactory inFactory(gr,(argc>1?stoi(argv[1]):0));
-    //cout << "N thread " << inFactory.n_thread << endl;
+    InterpreterFactory inFactory(gr,
+                                 (argc>1?stoi(argv[1]):0)
+#ifdef MULTY_QUEUE
+            ,QueueType::MULTY
+#endif
+    );
 
     function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
         auto &tv = static_cast<T_value<int> &> (*t);
@@ -42,7 +46,6 @@ int main(int argc, char* argv[]) {
 
 
     int N = (argc>2?stoi(argv[2]):100);
-
     for (int i = 0; i < N; i++) {
         inFactory.start("test", {shared_ptr<Token>(new T_value<int>(1, i)),
                                  shared_ptr<Token>(new T_value<int>(2, i))}, drain);

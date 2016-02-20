@@ -16,6 +16,8 @@ set(SOURCE_FILES
         SyncCout.h
         ThreadPool.cpp
         ThreadPool.h
+        ThreadPool_up.cpp
+        ThreadPool_up.h
         InterpreterFactory.cpp
         InterpreterFactory.h
         Helper.h)
@@ -23,8 +25,15 @@ set(SOURCE_FILES
 
 add_executable(example main.cpp ${SOURCE_FILES})
 
+add_executable(example_multy main.cpp ${SOURCE_FILES})
+target_compile_definitions(example_multy PRIVATE MULTY_QUEUE)
+
 add_executable(example_no_print main.cpp ${SOURCE_FILES})
 target_compile_definitions(example_no_print PRIVATE NO_PRINT)
+
+add_executable(example_multy_no_print main.cpp ${SOURCE_FILES})
+target_compile_definitions(example_multy_no_print PRIVATE NO_PRINT)
+target_compile_definitions(example_multy_no_print PRIVATE MULTY_QUEUE)
 
 add_executable(example_mic main.cpp ${SOURCE_FILES})
 set_target_properties(example_mic PROPERTIES COMPILE_FLAGS "-mmic" )
@@ -39,11 +48,25 @@ add_executable(busy_test busy_test.cpp ${SOURCE_FILES})
 add_executable(busy_test_no_print busy_test.cpp ${SOURCE_FILES})
 target_compile_definitions(busy_test_no_print PRIVATE NO_PRINT)
 
+add_executable(busy_test_multy busy_test.cpp ${SOURCE_FILES})
+target_compile_definitions(busy_test_multy PRIVATE MULTY_QUEUE)
+
+add_executable(busy_test_multy_no_print busy_test.cpp ${SOURCE_FILES})
+target_compile_definitions(busy_test_multy_no_print PRIVATE NO_PRINT)
+target_compile_definitions(busy_test_multy_no_print PRIVATE MULTY_QUEUE)
+
 add_executable(busy_test_mic busy_test.cpp ${SOURCE_FILES})
 set_target_properties(busy_test_mic PROPERTIES COMPILE_FLAGS "-mmic" )
 set_target_properties(busy_test_mic PROPERTIES LINK_FLAGS "-mmic" )
 target_compile_definitions(busy_test_mic PRIVATE NO_PRINT)
 add_custom_command(TARGET busy_test_mic POST_BUILD COMMAND scp busy_test_mic mic1:)
+
+add_executable(busy_test_mic_multy busy_test.cpp ${SOURCE_FILES})
+set_target_properties(busy_test_mic_multy PROPERTIES COMPILE_FLAGS "-mmic" )
+set_target_properties(busy_test_mic_multy PROPERTIES LINK_FLAGS "-mmic" )
+target_compile_definitions(busy_test_mic_multy PRIVATE NO_PRINT)
+target_compile_definitions(busy_test_mic_multy PRIVATE MULTY_QUEUE)
+add_custom_command(TARGET busy_test_mic_multy POST_BUILD COMMAND scp busy_test_mic_multy mic1:)
 
 
 add_executable(free_test free_test.cpp ${SOURCE_FILES})

@@ -25,7 +25,7 @@ class Interpreter : public enable_shared_from_this<Interpreter> {
 public:
     ~Interpreter() { }
 
-    Interpreter(ThreadPool& _tp, shared_ptr<Graph> g, initializer_list<shared_ptr<Token>>&&, Drainer&& d);
+    Interpreter(shared_ptr<ThreadPool> _tp, shared_ptr<Graph> g, initializer_list<shared_ptr<Token>>&&, Drainer&& d);
 
 //    Interpreter(Interpreter &&in) : _g(move(in._g)),
 //                                    _tp(move(in._tp)),
@@ -41,7 +41,7 @@ public:
 
 
 private:
-    ThreadPool& _tp;
+    shared_ptr<ThreadPool> _tp;
     shared_ptr<Graph> _g;
     Drainer _drainer;
 
