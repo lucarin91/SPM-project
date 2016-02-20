@@ -5,7 +5,13 @@ use constant N => 10;
 my $filename = shift or die "Usage: $0 FILENAME NUMBER\n";
 my $size = shift or die "Usage: $0 FILENAME NUMBER\n";
 my $N = shift || N;
+my $mic = shift || "mic1";
 my @json = ();
+
+if ($mic ne "mic1") {
+  my $r = `\\scp $filename $mic:`;
+  print "upload file...$r";
+}
 
 print "[\n";
 foreach my $p (1,5,10,15,20,25,30,35,40,45,50,55,60,65) {
@@ -15,7 +21,7 @@ foreach my $p (1,5,10,15,20,25,30,35,40,45,50,55,60,65) {
   print STDERR "$p: ";
   foreach my $i (1..$N) {
     # \time --format="%E" ./main.out --step 1000 --height 1000 --width 1000 --thread 16
-    my $r=`\\ssh mic1 "TIMEFORMAT=%R && time ./$filename $p $size" 2>&1`;
+    my $r=`\\ssh $mic "TIMEFORMAT=%R && time ./$filename $p $size" 2>&1`;
     $sum=$sum + $r;
     $r =~ s/^\s+|\s+$//g;
     push @timings, $r;

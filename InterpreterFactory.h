@@ -19,7 +19,9 @@
 using namespace std;
 typedef function<void(shared_ptr<Token>)> Drainer;
 
-enum class QueueType {SINGLE, MULTY};
+enum class QueueType {
+    SINGLE, MULTY
+};
 
 class InterpreterFactory {
     InterpreterFactory(InterpreterFactory const &) = delete;
@@ -34,20 +36,23 @@ class InterpreterFactory {
     shared_ptr<ThreadPool> _tp;
 
 public:
-    InterpreterFactory(shared_ptr<GraphRepository> g, int n, QueueType t=QueueType::SINGLE) : _gr(g) {
-        _tp = t == QueueType::SINGLE ? make_shared<ThreadPool>(n) : make_shared<ThreadPool_up>(n);
+    InterpreterFactory(shared_ptr<GraphRepository> g, int n, QueueType t = QueueType::SINGLE) : _gr(g) {
+        if (t == QueueType::SINGLE)
+            _tp = make_shared<ThreadPool>(n);
+        else
+            _tp = make_shared<ThreadPool_up>(n);
         _tp->start();
     }
 
-    InterpreterFactory(shared_ptr<GraphRepository> g): InterpreterFactory(g,0) { }
+    InterpreterFactory(shared_ptr<GraphRepository> g) : InterpreterFactory(g, 0) { }
 
-    void start(string, initializer_list<shared_ptr<Token>>&& , Drainer);
+    void start(string, initializer_list<shared_ptr<Token>> &&, Drainer);
 
-    int get_n_thread() const{
+    int get_n_thread() const {
         return _tp->n_thread;
     };
 
-    void wait(){
+    void wait() {
         _tp->wait();
     }
 
