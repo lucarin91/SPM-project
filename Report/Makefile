@@ -29,7 +29,7 @@ clean:
 	rm -rf build
 
 pdf: pre
-	pandoc --toc -N --bibliography=$(REFS) -o ./build/$(BUILDNAME).pdf --csl=./csl/$(CSL).csl --template=./templates/$(TEMPLATE) $(SECTIONS)
+	pandoc --toc -N --bibliography=$(REFS) -o ./build/$(BUILDNAME).pdf --csl=./csl/$(CSL).csl --template=./templates/$(TEMPLATE) --variable geometry:margin=1in $(SECTIONS) 
 	#open ./build/$(BUILDNAME).pdf
 
 pdfsafemode: pre
