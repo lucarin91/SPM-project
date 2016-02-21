@@ -13,18 +13,18 @@ int main(int argc, char* argv[]) {
     gr->add("test", {
             Statement([](t_in in_ptr) -> t_out {
                 auto &in = static_cast<T_value<int> &> (*in_ptr[0]);
-                return shared_ptr<T_value<int>>(new T_value<int>(in.value * 2));
+                return make_shared<T_value<int>>(in.value * 2);
             }, {3}, 4),
 
             Statement([](t_in in_ptr) -> t_out {
                 auto &in = static_cast<T_value<int> &> (*in_ptr[0]);
-                return shared_ptr<T_value<int>>(new T_value<int>(in.value * 3));
+                return make_shared<T_value<int>>(in.value * 3);
             }, {3}, 5),
 
             Statement([](t_in in_ptr) -> t_out {
                 auto &in1 = static_cast<T_value<int> &> (*in_ptr[0]);
                 auto &in2 = static_cast<T_value<int> &> (*in_ptr[1]);
-                return shared_ptr<T_value<int>>(new T_value<int>(in1.value + in2.value));
+                return make_shared<T_value<int>>(in1.value + in2.value);
             }, {1, 2}, 3)
     });
 
@@ -47,8 +47,8 @@ int main(int argc, char* argv[]) {
 
     int N = (argc>2?stoi(argv[2]):100);
     for (int i = 0; i < N; i++) {
-        inFactory.start("test", {shared_ptr<Token>(new T_value<int>(1, i)),
-                                 shared_ptr<Token>(new T_value<int>(2, i))}, drain);
+        inFactory.start("test", {make_shared<T_value<int>>(1, i),
+                                 make_shared<T_value<int>>(2, i)}, drain);
 
 
     }

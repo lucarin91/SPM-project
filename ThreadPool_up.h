@@ -15,10 +15,9 @@
 #include <sstream>
 #include "SyncCout.h"
 
-
 using namespace std;
 
-class ThreadPool_up  : public ThreadPool {
+class ThreadPool_up : public ThreadPool {
     ThreadPool_up(ThreadPool_up const &) = delete;
 
     ThreadPool_up(ThreadPool_up &) = delete;
@@ -27,7 +26,7 @@ class ThreadPool_up  : public ThreadPool {
 
     ThreadPool_up &operator=(ThreadPool_up const &) = delete;
 
-    vector < vector<function<void()> >> _task;
+    vector<vector<function<void()> >> _task;
     vector<unique_ptr<mutex>> _task_mutex;
     vector<unique_ptr<atomic<int>>> _task_count;
 
@@ -39,9 +38,9 @@ public:
     ThreadPool_up();
 
     virtual void start();
+
     virtual void addTask(function<void()> &&);
 
 };
-
 
 #endif //SPM_PROJECT_THREADPOOL_UP_H

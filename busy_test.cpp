@@ -15,8 +15,8 @@ int main(int argc, char* argv[]) {
 
             Statement([&n](t_in in_ptr) -> t_out {
                 auto &in = static_cast<T_value<double> &> (*in_ptr[0]);
-                shared_ptr<T_value<double>> res(new T_value<double>(in.value * 2));
-                for (int i=0;i<n/10;i++){
+                auto res = make_shared<T_value<double>>(in.value * 2);
+                for (int i=0;i<n;i++){
                     res->set(sin(res->value));
                 }
                 return res;
@@ -24,8 +24,8 @@ int main(int argc, char* argv[]) {
 
             Statement([&n](t_in in_ptr) -> t_out {
                 auto &in = static_cast<T_value<double> &> (*in_ptr[0]);
-                shared_ptr<T_value<double>> res(new T_value<double>(in.value * 3));
-                for (int i=0;i<n*10;i++){
+                auto res = make_shared<T_value<double>>(in.value * 3);
+                for (int i=0;i<n;i++){
                     res->set(sin(res->value));
                 }
                 return res;
@@ -34,18 +34,18 @@ int main(int argc, char* argv[]) {
             Statement([&n](t_in in_ptr) -> t_out {
                 auto &in1 = static_cast<T_value<int> &> (*in_ptr[0]);
                 auto &in2 = static_cast<T_value<int> &> (*in_ptr[1]);
-                shared_ptr<T_value<double>> res(new T_value<double>(in1.value + in2.value));
+                auto res = make_shared<T_value<double>>(in1.value + in2.value);
                 for (int i=0;i<n;i++){
                     res->set(sin(res->value));
                 }
                 return res;
             }, {1, 2}, 3),
 
-            Statement([](t_in in_ptr) -> t_out {
+            Statement([&n](t_in in_ptr) -> t_out {
                 auto &in1 = static_cast<T_value<double> &> (*in_ptr[0]);
                 auto &in2 = static_cast<T_value<double> &> (*in_ptr[1]);
-                shared_ptr<T_value<double>> res(new T_value<double>(in1.value * in2.value));
-                for (int i=0;i<10000;i++){
+                auto res = make_shared<T_value<double>>(in1.value * in2.value);
+                for (int i=0;i<n;i++){
                     res->set(sin(res->value));
                 }
                 return res;

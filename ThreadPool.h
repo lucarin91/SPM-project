@@ -27,12 +27,14 @@ class ThreadPool {
 
     vector<function<void()>> _task;
     mutex _task_mutex;
+
     void _body_thread();
 
 protected:
     vector<thread> _thread;
     int _n_thread;
     atomic<bool> _to_stop;
+
     int _get_num_thread();
 
 public:
@@ -50,6 +52,7 @@ public:
     const int &n_thread;
 
     virtual void addTask(function<void()> &&);
+
     virtual void start();
 };
 
