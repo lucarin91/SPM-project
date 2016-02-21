@@ -7,6 +7,7 @@ import seaborn as sns
 from matplotlib.pylab import *
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
 
+
 plt.rc('text', usetex=True)
 plt.rc('font', family='Times-Roman')
 sns.set_style(style='white')

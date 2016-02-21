@@ -1,5 +1,6 @@
 import json
-import sse, tc
+import sse
+import tc
 
 TEST_PATH = '../Test/good/'
 SEQ = 'busy_test_sequential_2000x30_(0,1000,4500,10000,45000).json'

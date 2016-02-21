@@ -78,7 +78,8 @@ def plot(seq, data):
         inset2.set_xlim([0, 15])
         inset2.yaxis.grid(True)
         inset2.yaxis.tick_right()
-        # plt.legend(loc='left center', bbox_to_anchor=(0.46, -0.08),fancybox=True,
+        # plt.legend(loc='left center', bbox_to_anchor=(0.46, -0.08),
+        #            fancybox=True,
         #            shadow=True, ncol=5)
         ax2.set_xticks(np.arange(min(x) - 1, max(x) + 1, 5.0))
         ax2.set_xlabel(r'$\textit{Thread}$')
