@@ -38,6 +38,7 @@ void ThreadPool_up::addTask(function<void()> &&f) {
         if (*_task_count[i] < min){
             min = *_task_count[i];
             index=i;
+            if (min == 0) break;
         }
     }
 #ifndef NO_PRINT
