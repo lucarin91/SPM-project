@@ -7,7 +7,7 @@ from matplotlib.pylab import *
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
 
 
-def plot(data):
+def plot(data, ylimit, xlimit=[4, 15]):
     plt.rc('text', usetex=True)
     plt.rc('font', family='Times-Roman')
     plt.figure(num=None,
@@ -31,16 +31,18 @@ def plot(data):
 
     ax.yaxis.grid(True)
     # ax.set_ylim([0,40])
-    plt.ylabel(r'$\textit{second}$', fontsize=20)
-    plt.xlabel(r'$\textit{Thread}$', fontsize=20)
+    plt.ylabel(r'$\textit{Seconds}$', fontsize=20)
+    plt.xlabel(r'$\textit{Threads}$', fontsize=20)
 
     axes = inset_axes(ax, width="60%", height="60%")
 
     sns.boxplot(data=df, fliersize=0, linewidth=0.75, width=0.5, ax=axes)
-    axes.set_ylim([1, 12])
-    axes.set_xlim([2, 13])
+    axes.set_ylim(ylimit)
+    axes.set_xlim(xlimit)
     axes.yaxis.grid(True)
     # axes.set_yscale('log')
     axes.yaxis.set_minor_formatter(FormatStrFormatter("%.2f"))
+    plt.subplots_adjust(left=0.06, bottom=0.07, right=0.99,
+                        top=0.98)
     plt.draw()
     return plt

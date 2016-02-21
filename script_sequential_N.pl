@@ -12,16 +12,16 @@ if ($mic ne "mic1") {
   print STDERR "upload file $r to $mic ..";
 }
 
-my $sum = 0;
 my @timings = ();
 foreach my $n (0, 1000, 4500, 10000, 45000) {
     print STDERR "\n....$n....:\n";
+    my $sum = 0;
     foreach my $i (1 .. $N) {
         # \time --format="%E" ./main.out --step 1000 --height 1000 --width 1000 --thread 16
         my $r = `\\ssh $mic "TIMEFORMAT=%R && time ./$filename $size $n" 2>&1`;
         $sum = $sum + $r;
         $r =~ s/^\s+|\s+$//g;
-        print STDERR $r." ";
+        print STDERR "$r ";
     }
 
     print STDERR "\n";

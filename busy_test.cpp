@@ -60,14 +60,15 @@ int main(int argc, char* argv[]) {
 #endif
                                  );
 
-
-    function<void(shared_ptr<Token>)> drain = [](shared_ptr <Token> t) {
+    double res = 0;
+    function<void(shared_ptr<Token>)> drain = [&res](shared_ptr <Token> t) {
         auto &tv = static_cast<T_value<double> &> (*t);
 #ifndef NO_PRINT
         stringstream msg;
         msg << "drainer: " << "token: " << tv.type << " value: " << tv.value;
         SyncCout::println(msg);
 #endif
+        res = tv.value;
     };
 
 
@@ -78,5 +79,5 @@ int main(int argc, char* argv[]) {
     }
 
     inFactory.wait();
-    return 0;
+    return res;
 }
