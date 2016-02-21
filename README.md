@@ -42,7 +42,7 @@ The library was tested on a Intel Xeon Phi by a stream of 2000 integer tokens th
 
 ![MDF test Graph\label{graph}](Report/img/graph.png)
 
-![Completion Time with Multi Task Queue\label{tc_m}](Reportimg/tc_m.png)
+![Completion Time with Multi Task Queue\label{tc_m}](Report/img/tc_m.png)
 
 ![Completion Time with Single Task Queue\label{tc_s}](Report/img/tc_s.png)
 
